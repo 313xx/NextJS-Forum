@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import Link from 'next/link';
 
@@ -10,8 +8,7 @@ import {
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
-	NavigationMenuTrigger,
-	navigationMenuTriggerStyle
+	NavigationMenuTrigger
 } from '@/components/ui/navigation-menu';
 
 import {
@@ -26,6 +23,10 @@ import {
 	PopoverTrigger
 } from '@/components/ui/popover';
 
+import { Skeleton } from '@/components/ui/skeleton';
+import { logout } from '@/auth/actions/logout';
+import { getAuth } from '@/auth/cookie';
+
 const categories = [
 	{ title: 'General Discussion', href: '/categories/general' },
 	{ title: 'Help & Support', href: '/categories/help' },
@@ -38,99 +39,139 @@ const forums = [
 ];
 
 const profileControl = [
-	{ title: 'Settings', href: '/profile/settings' },
-	{ title: 'Log Out', href: '/auth/logout' },
+	{ title: 'Settings', href: '/profile' },
 ];
 
-export function Navbar() {
+export async function Navbar() {
+	const { user } = await getAuth();
+
 	return (
-		<div className='dark text-white bg-black'>
-			<NavigationMenu>
-				<NavigationMenuList>
-					<NavigationMenuItem>
-						<Link href='/' legacyBehavior passHref>
-							<NavigationMenuLink className={'ml-4 text-lg whitespace-nowrap'}>
-								Forum Name
-							</NavigationMenuLink>
-						</Link>
-					</NavigationMenuItem>
+		<nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-black/80 dark:border-gray-800'>
+			<div className='max-w-7xl mx-auto'>
+				<div className='flex items-center justify-between h-16'>
+					<NavigationMenu className='flex-grow'>
+						<NavigationMenuList className='flex items-center'>
+							<NavigationMenuItem>
+								<Link href='/' legacyBehavior passHref>
+									<NavigationMenuLink className='text-lg font-bold text-gray-900 dark:text-white hover:opacity-80 transition-opacity'>
+										Forum Name
+									</NavigationMenuLink>
+								</Link>
+							</NavigationMenuItem>
 
-					<NavigationMenuList className='ml-4'>
-						<NavigationMenuItem>
-							<NavigationMenuTrigger>Forums</NavigationMenuTrigger>
-							<NavigationMenuContent>
-								<ul className='grid w-[300px] gap-3 p-4 md:w-[400px]'>
-									{forums.map((forum) => (
-										<ListItem key={forum.title} title={forum.title} href={forum.href}>
-											Visit the {forum.title} forum.
-										</ListItem>
-									))}
-								</ul>
-							</NavigationMenuContent>
-						</NavigationMenuItem>
+							<div className='flex items-center'>
+								<NavigationMenuItem>
+									<NavigationMenuTrigger className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors ml-4'>
+										Forums
+									</NavigationMenuTrigger>
+									<NavigationMenuContent>
+										<ul className='grid w-[300px] gap-3 p-4 md:w-[400px] bg-white dark:bg-black shadow-lg rounded-lg'>
+											{forums.map((forum) => (
+												<ListItem 
+													key={forum.title} 
+													title={forum.title} 
+													href={forum.href}
+													className='hover:bg-gray-100 dark:hover:bg-gray-900'
+												>
+													Visit the {forum.title} forum.
+												</ListItem>
+											))}
+										</ul>
+									</NavigationMenuContent>
+								</NavigationMenuItem>
 
-						<NavigationMenuItem>
-							<NavigationMenuTrigger>Categories</NavigationMenuTrigger>
-							<NavigationMenuContent>
-								<ul className='grid w-[300px] gap-3 p-4 md:w-[400px]'>
-									{categories.map((category) => (
-										<ListItem
-											key={category.title}
-											title={category.title}
-											href={category.href}
+								<NavigationMenuItem>
+									<NavigationMenuTrigger className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors'>
+										Categories
+									</NavigationMenuTrigger>
+									<NavigationMenuContent>
+										<ul className='grid w-[300px] gap-3 p-4 md:w-[400px] bg-white dark:bg-black shadow-lg rounded-lg'>
+											{categories.map((category) => (
+												<ListItem
+													key={category.title}
+													title={category.title}
+													href={category.href}
+													className='hover:bg-gray-100 dark:hover:bg-gray-900'
+												>
+													Explore {category.title} topics.
+												</ListItem>
+											))}
+										</ul>
+									</NavigationMenuContent>
+								</NavigationMenuItem>
+
+								<NavigationMenuItem>
+									<Link href='/about' legacyBehavior passHref>
+										<NavigationMenuLink className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors text-sm ml-4'>
+											About
+										</NavigationMenuLink>
+									</Link>
+								</NavigationMenuItem>
+
+								<NavigationMenuItem>
+									<Link href='/contact' legacyBehavior passHref>
+										<NavigationMenuLink className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors text-sm ml-8'>
+											Contact
+										</NavigationMenuLink>
+									</Link>
+								</NavigationMenuItem>
+							</div>
+						</NavigationMenuList>
+					</NavigationMenu>
+
+					{user ? (
+						<Popover>
+							<PopoverTrigger>
+								<Avatar className='cursor-pointer'>
+									<AvatarImage 
+										src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`} 
+										alt='Avatar' 
+										className='hover:opacity-80 transition-opacity'
+									/>
+									<AvatarFallback>
+										<Skeleton className='h-10 w-10 rounded-full' />
+									</AvatarFallback>
+								</Avatar>
+							</PopoverTrigger>
+							<PopoverContent className='w-56 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg'>
+								<div className='py-1 text-center'>
+									{profileControl.map((profile) => (
+										<Link 
+											key={profile.title} 
+											href={profile.href}
+											className='block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
 										>
-											Explore {category.title} topics.
-										</ListItem>
+											{profile.title}
+										</Link>
 									))}
-								</ul>
-							</NavigationMenuContent>
-						</NavigationMenuItem>
-
-						<NavigationMenuItem>
-							<Link href='/about' legacyBehavior passHref>
-								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-									About
-								</NavigationMenuLink>
+									<form action={logout}>
+										<button
+											type='submit'
+											className='w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-900'
+										>
+											Logout
+										</button>
+									</form>
+								</div>
+							</PopoverContent>
+						</Popover>
+					) : (
+						<div className='space-x-4'>
+							<Link href='/login' legacyBehavior passHref>
+								<a className={'bg-white text-black dark:bg-black dark:text-white border-2 px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity text-md'}>
+									Log in
+								</a>
 							</Link>
-						</NavigationMenuItem>
-
-						<NavigationMenuItem>
-							<Link href='/contact' legacyBehavior passHref>
-								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-									Contact
-								</NavigationMenuLink>
+							<Link href='/register' legacyBehavior passHref>
+								<a className={'bg-black text-white dark:bg-white dark:text-black px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity text-md'}>
+									Sign up
+								</a>
 							</Link>
-						</NavigationMenuItem>
-					</NavigationMenuList>
-				</NavigationMenuList>
-
-				<NavigationMenuItem className='w-screen flex justify-end'>
-					<NavigationMenuLink>
-						<Avatar className='mr-12'>
-							<Popover>
-								<PopoverTrigger>
-									<AvatarImage src='https://avatar.vercel.sh/jamal.svg?text=J' alt='@shadcn' />
-									<AvatarFallback>Avatar</AvatarFallback>
-								</PopoverTrigger>
-								<PopoverContent className='bg-[#09090b] border-[1.3px] border-[#27272a] mt-2 w-32'>
-									<ul className='grid w-[150px] gap-3 p-4 md:w-[100px] -mt-4'>
-										{profileControl.map((profile) => (
-											<ListItem
-												key={profile.title}
-												title={profile.title}
-												href={profile.href}
-												className='text-white hover:text-white hover:bg-[#27272a]'
-											>
-											</ListItem>
-										))}
-									</ul>
-								</PopoverContent>
-							</Popover>
-						</Avatar>
-					</NavigationMenuLink>
-				</NavigationMenuItem>
-			</NavigationMenu>
-		</div>
+						</div>
+					)}
+				</div>
+			</div>
+		</nav>
 	);
 }
 
@@ -144,13 +185,13 @@ const ListItem = React.forwardRef<
 				<a
 					ref={ref}
 					className={cn(
-						'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+						'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors',
 						className
 					)}
 					{...props}
 				>
-					<div className='text-sm font-medium leading-none'>{title}</div>
-					<p className='line-clamp-2 text-sm leading-snug text-muted-foreground'>
+					<div className='text-sm font-medium leading-none text-gray-900 dark:text-white'>{title}</div>
+					<p className='line-clamp-2 text-sm leading-snug text-gray-600 dark:text-gray-400'>
 						{children}
 					</p>
 				</a>
