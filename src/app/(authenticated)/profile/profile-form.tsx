@@ -16,12 +16,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/use-auth';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const profileFormSchema = z.object({
 	username: z
 		.string()
-		.min(2, {
-			message: 'Username must be at least 2 characters.'
+		.min(4, {
+			message: 'Username must be at least 4 characters.'
 		})
 		.max(15, {
 			message: 'Username must not be longer than 15 characters.'
@@ -36,6 +38,8 @@ const defaultValues: Partial<ProfileFormValues> = {
 };
 
 export function ProfileForm() {
+	const { user, isLoading } = useAuth();
+
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileFormSchema),
 		defaultValues,
@@ -45,6 +49,16 @@ export function ProfileForm() {
 	const onSubmit = () => {
 
 	};
+
+	if (isLoading) {
+		return(
+			<>
+				<div>Loading...</div>
+				<Skeleton className='h-4 w-[250px]' />
+				<Skeleton className='h-4 w-[200px]' />
+			</>
+		);
+	}
 
 	return (
 		<Form {...form}>
@@ -57,7 +71,7 @@ export function ProfileForm() {
 						<FormItem>
 							<FormLabel>Username</FormLabel>
 							<FormControl>
-								<Input placeholder='username' autoComplete='new-username' {...field} />
+								<Input placeholder={`${user!.username}`} autoComplete='new-username' {...field} />
 							</FormControl>
 							<FormDescription>
 								This is your public display name. You can only change this once every 30 days.

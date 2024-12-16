@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import BodyComponent from '@/components/bodycomponent';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -13,9 +14,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className='dark bg-zinc-900'>
-				{children}
+			<body>
+				<BodyComponent>
+					{children}
+				</BodyComponent>
 			</body>
 		</html>
-	);
+	);  
 }

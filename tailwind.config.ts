@@ -56,10 +56,14 @@ const config: Config = {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			maxWidth: {
+				'8xl': '90rem'
 			}
 		}
 	},
 	// eslint-disable-next-line @typescript-eslint/no-require-imports
 	plugins: [require('tailwindcss-animate'),]
 };
+
 export default config;

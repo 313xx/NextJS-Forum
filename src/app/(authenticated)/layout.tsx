@@ -12,5 +12,9 @@ export default async function AuthenticatedLayout({
 		redirect('/login');
 	}
 
-	return <>{children}</>;
+	return (
+		<>
+			{children}
+		</>
+	);
 }

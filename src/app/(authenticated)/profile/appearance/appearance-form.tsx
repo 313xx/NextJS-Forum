@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -16,6 +17,7 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Toaster } from '@/components/ui/toaster';
 
 const appearanceFormSchema = z.object({
 	theme: z.enum(['light', 'dark',], {
@@ -23,29 +25,33 @@ const appearanceFormSchema = z.object({
 	})
 });
 
-type AppearanceFormValues = z.infer<typeof appearanceFormSchema>
-
-// This can come from your database or API.
-const defaultValues: Partial<AppearanceFormValues> = {
-	theme: 'dark'
-};
+type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 export function AppearanceForm() {
+	const defaultTheme: AppearanceFormValues['theme'] = 
+	typeof window !== 'undefined' 
+		? (localStorage.getItem('theme') as AppearanceFormValues['theme']) || 'dark' 
+		: 'dark';
+  
 	const form = useForm<AppearanceFormValues>({
 		resolver: zodResolver(appearanceFormSchema),
-		defaultValues
+		defaultValues: { theme: defaultTheme }
 	});
 
 	function onSubmit(data: AppearanceFormValues) {
+		localStorage.setItem('theme', data.theme);
 		toast({
-			title: 'You submitted the following values:',
-			description: (
-				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-					<code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			)
+			title: 'Preferences updated',
+			description: `You selected the ${data.theme} theme.`
 		});
+
+		window.location.reload();
 	}
+
+	useEffect(() => {
+		const currentTheme = form.getValues('theme');
+		document.documentElement.setAttribute('data-theme', currentTheme);
+	}, [form.getValues('theme'),]);
 
 	return (
 		<Form {...form}>
@@ -58,11 +64,14 @@ export function AppearanceForm() {
 						<FormItem className='space-y-1'>
 							<FormLabel>Theme</FormLabel>
 							<FormDescription>
-								Select the theme for the dashboard.
+								Select the theme for the app.
 							</FormDescription>
 							<FormMessage />
 							<RadioGroup
-								onValueChange={field.onChange}
+								onValueChange={(value) => {
+									field.onChange(value);
+									document.documentElement.setAttribute('data-theme', value);
+								}}
 								defaultValue={field.value}
 								className='grid max-w-md grid-cols-2 gap-8 pt-2'
 							>
@@ -125,6 +134,7 @@ export function AppearanceForm() {
 
 				<Button type='submit'>Update preferences</Button>
 			</form>
+			<Toaster/>
 		</Form>
 	);
 }

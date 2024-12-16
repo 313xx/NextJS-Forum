@@ -15,6 +15,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useAuth } from '@/hooks/use-auth';
+import { redirect } from 'next/navigation';
 
 const loginSchema = z.object({
 	username: z.string().min(1, 'Username is required'),
@@ -22,6 +24,8 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
+	const { user } = useAuth();
+	
 	const [error, setError,] = useState<string | null>(null);
     
 	const form = useForm<z.infer<typeof loginSchema>>({
@@ -43,6 +47,9 @@ export function LoginForm() {
 			setError(err instanceof Error ? err.message : 'An unexpected error occurred');
 		}
 	};
+
+	if (user?.username)
+		redirect('/');
 
 	return (
 		<Card>

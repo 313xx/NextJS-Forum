@@ -15,17 +15,26 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useAuth } from '@/hooks/use-auth';
+import { redirect } from 'next/navigation';
 
 const registerSchema = z.object({
-	username: z.string().min(1, 'Username is required'),
-	password: z.string().min(6, 'Password must be at least 6 characters'),
+	username: z.string()
+		.min(4, 'Username must be at least 4 characters.')
+		.max(15, 'Username must not be longer than 15 characters.')
+		.regex(/^\S*$/, 'Username cannot contain spaces.'),
+	password: z.string()
+		.min(6, 'Password must be at least 6 characters')
+		.regex(/^\S*$/, 'Password cannot contain spaces.'),
 	confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-	message: 'Passwords do not match',
-	path: ['confirmPassword',]
-});
-
+})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: 'Passwords do not match',
+		path: ['confirmPassword',]
+	});
+  
 export function RegisterForm() {
+	const { user } = useAuth();
 	const [error, setError,] = useState<string | null>(null);
    
 	const form = useForm<z.infer<typeof registerSchema>>({
@@ -48,6 +57,9 @@ export function RegisterForm() {
 			setError(err instanceof Error ? err.message : 'An unexpected error occurred');
 		}
 	};
+
+	if (user?.username) 
+		redirect('/');
 
 	return (
 		<Card className='mx-auto max-w-sm'>

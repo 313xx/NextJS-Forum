@@ -11,20 +11,27 @@ const register = async (formData: FormData) => {
 		username: (formData.get('username') as string)?.trim(),
 		password: formData.get('password') as string
 	};
-    
+
 	if (!formDataRaw.username) {
 		throw new Error('Username is required');
 	}
 	if (!formDataRaw.password) {
 		throw new Error('Password is required');
 	}
-   
+
+	if (/\s/.test(formDataRaw.username)) {
+		throw new Error('Username cannot contain spaces');
+	}
+	if (/\s/.test(formDataRaw.password)) {
+		throw new Error('Password cannot contain spaces');
+	}
+
 	const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    
+
 	if (!PASSWORD_REGEX.test(formDataRaw.password)) {
 		throw new Error('Password must be at least 8 characters long and include uppercase, lowercase, and number');
 	}
-    
+
 	try {
 		const existingUser = await prisma.user.findUnique({
 			where: { username: formDataRaw.username }
@@ -33,7 +40,7 @@ const register = async (formData: FormData) => {
 		if (existingUser) {
 			throw new Error('Username is already in use');
 		}
-        
+
 		const passwordHash = await hashPassword(formDataRaw.password);
 		const user = await prisma.user.create({
 			data: {
@@ -41,15 +48,15 @@ const register = async (formData: FormData) => {
 				passwordHash
 			}
 		});
-        
+
 		const sessionToken = generateRandomSessionToken();
 		const session = await createSession(sessionToken, user.id);
 		await setSessionCookie(sessionToken, session.expiresAt);
-        
+
 		redirect('/');
 	} catch (error) {
 		intendedError('Registration error:', error);
-        
+
 		throw error;
 	}
 };
