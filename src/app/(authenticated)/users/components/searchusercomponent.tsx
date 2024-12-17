@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { User } from '@/types/types';
 import { redirect } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 
 type UserResponse = {
 	users: User[];
@@ -214,6 +215,11 @@ export default function SearchUserComponent() {
 												<div className='text-muted-foreground text-xs'>
 													Bio
 												</div>
+											</div>
+											<div className='w-full text-center md:text-right'>
+												<Badge variant={'outline'} className='text-base sm:text-xs md:text-sm font-semibold truncate'>
+													{user.role}
+												</Badge>
 											</div>
 										</div>
 									))}

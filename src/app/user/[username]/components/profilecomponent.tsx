@@ -4,14 +4,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { getAuth } from '@/auth/cookie';
 
 interface ProfileComponentProps {
 	user: User,
 }
 
-const ProfileComponent: React.FC<ProfileComponentProps> = ({ user }) => {
+const ProfileComponent: React.FC<ProfileComponentProps> = async ({ user }) => {
+	const authenticatedUser = await getAuth();
+	
 	return (
-		<Card className='w-full max-w-md mx-auto mt-8 sm:mt-16 md:mt-32 p-4 sm:p-6'>
+		<Card className='w-full max-w-md mx-auto mt-8 sm:mt-16 md:mt-32 p-4 sm:p-6 select-none'>
 			<CardHeader>
 				<div className='flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4'>
 					<Avatar className='h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-sm'>
@@ -32,6 +36,14 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user }) => {
 							Bio
 						</p>
 					</div>
+					<div className='w-full text-center md:text-right'>
+						<Badge variant={'outline'} className='text-base sm:text-xs md:text-sm font-semibold truncate'>
+							{user.role}
+						</Badge>
+					</div>
+					{authenticatedUser.user?.role === 'ADMIN' && (
+						<div>your an admin</div>
+					)}
 				</div>
 			</CardHeader>
 			<Separator className='my-4' />
