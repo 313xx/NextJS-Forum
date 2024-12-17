@@ -67,8 +67,7 @@ export default function SearchUserComponent() {
 	const {
 		data,
 		isLoading,
-		isError,
-		refetch
+		isError
 	} = useQuery({
 		queryKey: ['users', currentPage, usersPerPage, searchTerm,],
 		queryFn: () => fetchUsers(currentPage, usersPerPage, searchTerm),
@@ -203,7 +202,7 @@ export default function SearchUserComponent() {
 													<Skeleton className='h-10 w-10 rounded-md' />
 												</AvatarFallback>
 											</Avatar>
-											<div className='flex-grow space-y-2'>
+											<div className='flex-grow space-y-1'>
 												<div 
 													onClick={() => (redirect(`/user/${user.username}`))}
 													className='text-muted-foreground text-md hover:opacity-80 transition-opacity'
@@ -255,7 +254,7 @@ export default function SearchUserComponent() {
 													e.preventDefault();
 													handleNextPage();
 												}}
-												isActive={data?.pagination.currentPage && data.pagination.currentPage < data.pagination.totalPages}
+												isActive={!!(data?.pagination.currentPage && data.pagination.currentPage < data.pagination.totalPages)}
 											/>
 										</PaginationItem>
 									</PaginationContent>

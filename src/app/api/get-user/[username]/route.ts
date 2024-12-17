@@ -26,8 +26,8 @@ export async function GET(
 		}
  
 		return NextResponse.json(
-			user
-			, { status: 200 });
+			user , { status: 200 }
+		);
 	} catch (error) {
 		intendedError('Request error', error);
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {

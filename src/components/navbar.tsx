@@ -261,12 +261,12 @@ export async function Navbar() {
 								</DialogContent>
 							</Dialog>
 
-							<Link href='login' legacyBehavior passHref>
+							<Link href='/login' legacyBehavior passHref>
 								<a className={'bg-white text-black dark:bg-black dark:text-white border-2 px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity text-md'}>
 									Log in
 								</a>
 							</Link>
-							<Link href='register' legacyBehavior passHref>
+							<Link href='/register' legacyBehavior passHref>
 								<a className={'bg-black text-white dark:bg-white dark:text-black px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity text-md'}>
 									Sign up
 								</a>
