@@ -121,21 +121,15 @@ export async function Navbar() {
 									</NavigationMenuContent>
 								</NavigationMenuItem>
 
-								<NavigationMenuItem>
-									<Link href='/about' legacyBehavior passHref>
-										<NavigationMenuLink className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors text-sm ml-4'>
-											About
-										</NavigationMenuLink>
-									</Link>
-								</NavigationMenuItem>
-
-								<NavigationMenuItem>
-									<Link href='/contact' legacyBehavior passHref>
-										<NavigationMenuLink className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors text-sm ml-8'>
-											Contact
-										</NavigationMenuLink>
-									</Link>
-								</NavigationMenuItem>
+								{user && (
+									<NavigationMenuItem>
+										<Link href='/users' legacyBehavior passHref>
+											<NavigationMenuLink className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors text-sm ml-4'>
+												Users
+											</NavigationMenuLink>
+										</Link>
+									</NavigationMenuItem>
+								)}
 							</div>
 						</NavigationMenuList>
 					</NavigationMenu>
@@ -155,7 +149,7 @@ export async function Navbar() {
 											<CommandEmpty>No results found.</CommandEmpty>
 											<CommandGroup heading='Suggestions'>
 												<CommandItem>
-													<Link href='/search-user' legacyBehavior passHref>
+													<Link href='/users' legacyBehavior passHref>
 														<a className='w-full'>
 															Search users
 														</a>
@@ -206,6 +200,12 @@ export async function Navbar() {
 								</PopoverTrigger>
 								<PopoverContent className='w-36 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg mt-4'>
 									<div className='py-1 text-center'>
+										<Link 
+											href={`/user/${user.username}`}
+											className='block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
+										>
+											Profile
+										</Link>
 										{profileControl.map((profile) => (
 											<Link 
 												key={profile.title} 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { SESSION_COOKIE_NAME } from '@/auth/cookie'; // Adjust import as needed
-import { validateSession } from '@/auth/session'; // Your existing validation function
+import { SESSION_COOKIE_NAME } from '@/auth/cookie';
+import { validateSession } from '@/auth/session';
 import { intendedError } from '@/utils/utils';
 
 

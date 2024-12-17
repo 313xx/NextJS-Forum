@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
 			prisma.user.findMany({
 				where: whereCondition,
 				select: {
-					id: true,
 					username: true
 				},
 				skip,

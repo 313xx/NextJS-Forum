@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import { intendedError } from '@/utils/utils';
-import { RefreshCw, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 import {
 	Select,
@@ -24,11 +24,8 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select';
-
-type User = {
-	id: number;
-	username: string;
-};
+import { User } from '@/types/types';
+import { redirect } from 'next/navigation';
 
 type UserResponse = {
 	users: User[];
@@ -144,13 +141,6 @@ export default function SearchUserComponent() {
 									<SelectItem value='15'>Show 15 users</SelectItem>
 								</SelectContent>
 							</Select>
-
-							<RefreshCw
-								onClick={() => {
-									void refetch();
-								}}
-								className='cursor-pointer'
-							/>
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
@@ -214,8 +204,13 @@ export default function SearchUserComponent() {
 												</AvatarFallback>
 											</Avatar>
 											<div className='flex-grow space-y-2'>
-												<div className='text-muted-foreground text-sm'>
-													@{user.username}
+												<div 
+													onClick={() => (redirect(`/user/${user.username}`))}
+													className='text-muted-foreground text-md hover:opacity-80 transition-opacity'
+												>
+													<a href={`/user/${user.username}`}>
+														@{user.username}
+													</a>
 												</div>
 												<div className='text-muted-foreground text-xs'>
 													Bio
