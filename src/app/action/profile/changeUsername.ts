@@ -42,7 +42,7 @@ export const changeUsername = async (oldUsername: string, newUsername: string) =
 			return { success: false, message: 'Username is already taken' };
 		}
         
-		const updatedUser = await prisma.user.update({
+		await prisma.user.update({
 			where: {
 				id: existingUser.id
 			},
@@ -51,7 +51,7 @@ export const changeUsername = async (oldUsername: string, newUsername: string) =
 			}
 		});
         
-		return { success: true, user: updatedUser };
+		return { success: true, user: 'Username updated successfully' };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			return { success: false, message: 'Database query error' };
