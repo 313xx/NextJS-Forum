@@ -18,7 +18,10 @@ export async function GET() {
 		const authResult = await validateSession(sessionToken);
 	  
 		return NextResponse.json({ 
-			user: authResult.user ? { username: authResult.user.username } : null 
+			authenticatedUser: authResult.user ? { 
+				username: authResult.user.username,
+				role: authResult.user.role
+			} : null 
 		}, { status: 200 });
 	} catch (error) {
 		intendedError('Authentication error:', error);

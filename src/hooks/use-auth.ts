@@ -5,14 +5,15 @@ import { useState, useEffect } from 'react';
 
 interface User {
 	username: string;
+	role: string;
 }
 
 interface AuthResult {
-	user: User | null;
+	authenticatedUser: User | null;
 }
 
 export function useAuth() {
-	const [auth, setAuth,] = useState<AuthResult>({ user: null });
+	const [auth, setAuth,] = useState<AuthResult>({ authenticatedUser: null });
 	const [isLoading, setIsLoading,] = useState(true);
 
 	useEffect(() => {
@@ -20,10 +21,11 @@ export function useAuth() {
 			try {
 				const response = await fetch('/api/auth');
 				const data = await response.json() as AuthResult;
+
 				setAuth(data);
 			} catch (error) {
 				intendedError('Failed to fetch auth', error);
-				setAuth({ user: null });
+				setAuth({ authenticatedUser: null });
 			} finally {
 				setIsLoading(false);
 			}

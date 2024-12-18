@@ -38,7 +38,7 @@ const defaultValues: Partial<ProfileFormValues> = {
 };
 
 export function ProfileForm() {
-	const { user, isLoading } = useAuth();
+	const { authenticatedUser, isLoading } = useAuth();
 
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileFormSchema),
@@ -71,7 +71,7 @@ export function ProfileForm() {
 						<FormItem>
 							<FormLabel>Username</FormLabel>
 							<FormControl>
-								<Input placeholder={`${user!.username}`} autoComplete='new-username' {...field} />
+								<Input placeholder={`${authenticatedUser?.username}`} autoComplete='new-username' {...field} />
 							</FormControl>
 							<FormDescription>
 								This is your public display name. You can only change this once every 30 days.
