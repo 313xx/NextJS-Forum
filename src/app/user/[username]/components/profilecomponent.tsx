@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User } from '@/types/types';
+import { ServerActionResponse, User } from '@/types/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -38,18 +38,13 @@ interface ProfileComponentProps {
 	deleteUser: (username: string) => void
 }
 
-type DeleteUserResponse = {
-	success: boolean;
-	message: string;
-}
-
 const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser }) => {
 	const { authenticatedUser, isLoading } = useAuth();
 	const [alertIsOpened, setAlertIsOpened,] = useState(false);
 	const router = useRouter();
 
 	const handleDeleteUser = async () => {
-		const result = await deleteUser(user.username) as unknown as DeleteUserResponse;
+		const result = await deleteUser(user.username) as unknown as ServerActionResponse;
 		if (result.success) {
 			toast({
 				title: 'Successfully removed',

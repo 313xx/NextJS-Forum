@@ -3,7 +3,6 @@ import { Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
 import { SESSION_COOKIE_NAME } from '@/auth/cookie';
 import { validateSession } from '@/auth/session';
-import { intendedError } from '@/utils/utils';
 
 export const deleteUser = async (username: string) => {
 	'use server';
@@ -45,7 +44,6 @@ export const deleteUser = async (username: string) => {
 
 		return { success: true, message: 'User deleted successfully' };
 	} catch (error) {
-		intendedError('Request error', error);
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			return { success: false, message: 'Database query error' };
 		}

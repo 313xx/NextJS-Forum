@@ -69,7 +69,6 @@ export function LoginForm() {
 			</CardHeader>
 			<CardContent>
 				<Form {...form}>
-					{/* eslint-disable-next-line @typescript-eslint/no-misused-promises*/}
 					<form onSubmit={form.handleSubmit(handleLogin)} className='grid gap-4'>
 						<FormField
 							control={form.control}

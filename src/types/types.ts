@@ -3,3 +3,8 @@ export type User = {
 	username: string;
 	role: string;
 };
+
+export type ServerActionResponse = {
+	success: boolean;
+	message: string;
+}

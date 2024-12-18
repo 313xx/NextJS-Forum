@@ -76,7 +76,8 @@ export default [
 			'@stylistic/js/jsx-quotes': ['error', 'prefer-single',],
 			'no-undef': 'off',
 			"react/prop-types": 0,
-		    "@typescript-eslint/await-thenable": "off"
+		    "@typescript-eslint/await-thenable": "off",
+			"@typescript-eslint/no-misused-promises": "off"
 		}
 	},
 ];
