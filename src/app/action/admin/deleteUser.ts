@@ -11,6 +11,11 @@ export const deleteUser = async (username: string) => {
 		return { success: false, message: 'Username is required' };
 	}
 
+	const testUsername = username.trim().toLowerCase();
+	if (!testUsername.match(/^[a-z0-9_-]+$/i)) {
+		return { success: false, message: 'Invalid username format' };
+	}
+
 	try {
 		const sessionToken = cookies().get(SESSION_COOKIE_NAME)?.value ?? null;
 
@@ -27,19 +32,23 @@ export const deleteUser = async (username: string) => {
 		if (currentUser.role !== 'ADMIN') 
 			return { success: false, message: 'Permission denied. Only admins can delete users.' };
 
-		const user = await prisma.user.findUnique({
-			where: { username },
-			select: { username: true }
-		});
+		await prisma.$transaction(async (transaction) => {
+			const user = await transaction.user.findUnique({
+				where: { username },
+				select: { username: true }
+			});
 
-		if (!user) 
-			return { success: false, message: 'User not found' };
+			if (!user) {
+				throw new Error('User not found');
+			}
 
-		if (user.username === currentUser.username)
-			return { success: false, message: 'You cannot delete your own account' };
+			if (user.username === currentUser.username) {
+				throw new Error('You cannot delete your own account');
+			}
 
-		await prisma.user.delete({
-			where: { username }
+			await transaction.user.delete({
+				where: { username }
+			});
 		});
 
 		return { success: true, message: 'User deleted successfully' };

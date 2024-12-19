@@ -51,7 +51,7 @@ type BioFormValues = z.infer<typeof bioFormSchema>;
 
 interface ProfileFormComponentProps {
 	changeUsername: (oldUsername: string, newUsername: string) => void
-}
+}	
 
 const ProfileForm: React.FC<ProfileFormComponentProps> = ({ changeUsername }) => {
 	const { authenticatedUser, isLoading } = useAuth();
