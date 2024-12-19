@@ -32,6 +32,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { toast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 
 interface ProfileComponentProps {
 	user: User,
@@ -74,16 +75,20 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 			<Card className='w-full max-w-md mx-auto mt-8 sm:mt-16 md:mt-32 p-4 sm:p-6'>
 				<CardHeader>
 					<div className='flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 relative'>
-						<Avatar className='h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-sm'>
-							<AvatarImage
-								src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`}
-								alt='Avatar'
-								className='object-cover'
-							/>
-							<AvatarFallback>
-								<Skeleton className='h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-sm' />
-							</AvatarFallback>
-						</Avatar>
+						<div className='flex flex-col items-center'>
+							<Avatar className='h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-sm'>
+								<AvatarImage 
+									src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`}
+									alt={user.username}
+								/>
+								<AvatarFallback>{user.username[0]?.toUpperCase()}</AvatarFallback>
+							</Avatar>
+							<div className='mt-2 flex justify-center'>
+								<Badge className='text-xs'>
+									{user.role}
+								</Badge>
+							</div>
+						</div>
 						<div className='text-center sm:text-left space-y-1 w-full'>
 							<h2 className='text-base sm:text-lg md:text-xl font-semibold truncate'>
 								{user.username}

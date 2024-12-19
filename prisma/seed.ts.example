@@ -1,0 +1,44 @@
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+
+const prisma = new PrismaClient();
+
+async function seed() {
+  try {
+    await prisma.session.deleteMany({});
+    await prisma.user.deleteMany({});
+
+    const users = [
+		{ username: 'admin', password: 'adminpass123', role: 'ADMIN' },
+        { username: 'user', password: 'userpass123', role: 'USER' },
+		{ username: 'john_doe', password: 'john123', role: 'USER' },
+		{ username: 'jane_smith', password: 'jane123', role: 'USER' },
+		{ username: 'bob_wilson', password: 'bob123', role: 'USER' },
+		{ username: 'alice_brown', password: 'alice123', role: 'USER' },
+    ];
+
+    for (const user of users) {
+      const passwordHash = await bcrypt.hash(user.password, 10);
+      await prisma.user.create({
+        data: {
+          username: user.username,
+          passwordHash,
+          role: user.role,
+        },
+      });
+    }
+
+    console.log('Database has been seeded with users.');
+  } catch (error) {
+    console.error('Error seeding database: ', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+seed()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

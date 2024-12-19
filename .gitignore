@@ -38,3 +38,4 @@ src/app/output.css
 
 /prisma/dev.db
 .env
+prisma/seed.ts

@@ -7,7 +7,7 @@ import {
 import { prisma } from '@/lib/prisma';
 
 export const generateRandomSessionToken = () => {
-	const bytes = new Uint8Array(20);
+	const bytes = new Uint8Array(32);
 	crypto.getRandomValues(bytes);
 	return encodeBase32LowerCaseNoPadding(bytes);
 };
