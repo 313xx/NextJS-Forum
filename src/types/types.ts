@@ -1,8 +1,13 @@
 export type User = {
-	id: number;
 	username: string;
 	role: string;
+	createdAt: Date;
+	_count: {
+		threads: number;
+		comments: number;
+	};
 };
+  
 
 export type ServerActionResponse = {
 	success: boolean;

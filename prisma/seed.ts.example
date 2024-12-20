@@ -1,44 +1,151 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
-
 const prisma = new PrismaClient();
 
 async function seed() {
-  try {
-    await prisma.session.deleteMany({});
-    await prisma.user.deleteMany({});
+	try {
+		await prisma.session.deleteMany({});
+		await prisma.comment.deleteMany({});
+		await prisma.thread.deleteMany({});
+		await prisma.category.deleteMany({});
+		await prisma.user.deleteMany({});
 
-    const users = [
-		{ username: 'admin', password: 'adminpass123', role: 'ADMIN' },
-        { username: 'user', password: 'userpass123', role: 'USER' },
-		{ username: 'john_doe', password: 'john123', role: 'USER' },
-		{ username: 'jane_smith', password: 'jane123', role: 'USER' },
-		{ username: 'bob_wilson', password: 'bob123', role: 'USER' },
-		{ username: 'alice_brown', password: 'alice123', role: 'USER' },
-    ];
+		const users = [
+			{ username: 'admin', password: '1234', role: 'ADMIN' },
+			{ username: 'user', password: '1234', role: 'USER' },
+			{ username: 'john_doe', password: 'john123', role: 'USER' },
+			{ username: 'jane_smith', password: 'jane123', role: 'USER' },
+			{ username: 'bob_wilson', password: 'bob123', role: 'USER' },
+			{ username: 'alice_brown', password: 'alice123', role: 'USER' },
+		];
 
-    for (const user of users) {
-      const passwordHash = await bcrypt.hash(user.password, 10);
-      await prisma.user.create({
-        data: {
-          username: user.username,
-          passwordHash,
-          role: user.role,
-        },
-      });
-    }
+		const createdUsers = {};
+		for (const user of users) {
+			const passwordHash = await bcrypt.hash(user.password, 10);
+			const createdUser = await prisma.user.create({
+				data: {
+					username: user.username,
+					passwordHash,
+					role: user.role
+				}
+			});
+			createdUsers[user.username] = createdUser;
+		}
 
-    console.log('Database has been seeded with users.');
-  } catch (error) {
-    console.error('Error seeding database: ', error);
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
+		const categories = [
+			{ name: 'Technology', description: 'Threads about technology and innovation' },
+			{ name: 'Health', description: 'Health and wellness related threads' },
+			{ name: 'Education', description: 'Educational content and resources' },
+			{ name: 'Programming', description: 'Programming and software development' },
+			{ name: 'Lifestyle', description: 'Lifestyle and personal development' },
+		];
+
+		const createdCategories = {};
+		for (const category of categories) {
+			const createdCategory = await prisma.category.create({
+				data: category
+			});
+			createdCategories[category.name] = createdCategory;
+		}
+
+		// Create threads
+		const threads = [
+			{
+				title: 'Getting Started with Prisma',
+				content: 'Prisma is a modern database toolkit that makes database access easy...',
+				published: true,
+				authorUsername: 'admin',
+				categories: ['Technology', 'Programming',]
+			},
+			{
+				title: 'Healthy Living Tips',
+				content: 'Here are some tips for maintaining a healthy lifestyle...',
+				published: true,
+				authorUsername: 'jane_smith',
+				categories: ['Health', 'Lifestyle',]
+			},
+			{
+				title: 'Learning Resources for Developers',
+				content: 'A curated list of the best resources for learning programming...',
+				published: true,
+				authorUsername: 'john_doe',
+				categories: ['Education', 'Programming',]
+			},
+			{
+				title: 'Tech Trends 2024',
+				content: 'Exploring the latest trends in technology...',
+				published: false,
+				authorUsername: 'bob_wilson',
+				categories: ['Technology',]
+			},
+		];
+
+		const createdThreads = {};
+		for (const thread of threads) {
+			const createdThread = await prisma.thread.create({
+				data: {
+					title: thread.title,
+					content: thread.content,
+					published: thread.published,
+					author: {
+						connect: { id: createdUsers[thread.authorUsername].id }
+					},
+					categories: {
+						connect: thread.categories.map(categoryName => ({ id: createdCategories[categoryName].id }))
+					}
+				}
+			});
+			createdThreads[thread.title] = createdThread;
+		}
+
+		const comments = [
+			{
+				content: 'Great introduction to Prisma!',
+				authorUsername: 'john_doe',
+				threadTitle: 'Getting Started with Prisma'
+			},
+			{
+				content: 'These health tips are really helpful.',
+				authorUsername: 'alice_brown',
+				threadTitle: 'Healthy Living Tips'
+			},
+			{
+				content: 'Thanks for sharing these resources!',
+				authorUsername: 'bob_wilson',
+				threadTitle: 'Learning Resources for Developers'
+			},
+			{
+				content: 'Looking forward to more posts like this.',
+				authorUsername: 'user',
+				threadTitle: 'Getting Started with Prisma'
+			},
+		];
+
+		for (const comment of comments) {
+			await prisma.comment.create({
+				data: {
+					content: comment.content,
+					author: {
+						connect: { id: createdUsers[comment.authorUsername].id }
+					},
+					thread: {
+						connect: { id: createdThreads[comment.threadTitle].id }
+					}
+				}
+			});
+		}
+
+		console.log('Database has been seeded successfully.');
+	} catch (error) {
+		console.error('Error seeding database:', error);
+		throw error;
+	} finally {
+		await prisma.$disconnect();
+	}
 }
 
 seed()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+	.catch((error) => {
+		console.error(error);
+		process.exit(1);
+	});

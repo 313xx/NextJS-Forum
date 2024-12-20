@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { ServerActionResponse, User } from '@/types/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { 
@@ -33,6 +32,8 @@ import { toast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import ProfileSkeleton from './profileSkeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProfileComponentProps {
 	user: User,
@@ -63,9 +64,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 
 	if (isLoading) {
 		return (
-			<Card className='w-full max-w-md mx-auto mt-8 sm:mt-16 md:mt-32 p-4 sm:p-6 select-none'>
-				<Skeleton className='h-full w-full' />
-			</Card>
+			<ProfileSkeleton/>
 		);
 	}
 
@@ -81,10 +80,10 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 									src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`}
 									alt={user.username}
 								/>
-								<AvatarFallback>{user.username[0]?.toUpperCase()}</AvatarFallback>
+								<AvatarFallback><Skeleton/></AvatarFallback>
 							</Avatar>
-							<div className='mt-2 flex justify-center'>
-								<Badge className='text-xs'>
+							<div className='mt-2 flex justify-center flex-col gap-2'>
+								<Badge className='text-xs text-center'>
 									{user.role}
 								</Badge>
 							</div>
@@ -96,6 +95,9 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 							<p className='text-sm sm:text-md text-muted-foreground'>
 								Bio
 							</p>
+							<Badge className='text-xs mt-2' variant={'outline'}>
+								User joined: {user.createdAt.toString().split('T')[0]}
+							</Badge>
 						</div>
 
 						{authenticatedUser?.role === 'ADMIN' && authenticatedUser.username !== user.username && (
@@ -107,8 +109,8 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 												<MoreVertical className='h-4 w-4' />
 											</Button>
 										</DropdownMenuTrigger>
-										<DropdownMenuContent align='end'>
-											<DropdownMenuLabel>Admin Actions</DropdownMenuLabel>
+										<DropdownMenuContent align='center'>
+											<DropdownMenuLabel className='text-center'>Admin Actions</DropdownMenuLabel>
 											<DropdownMenuSeparator />
 
 											<DropdownMenuItem>
@@ -151,7 +153,18 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 				<Separator className='my-4' />
 				<CardContent>
 					<p className='text-sm sm:text-md text-muted-foreground'>
-						1 Post
+						{user._count.threads ? (
+							<>{user._count.threads} {user._count.threads === 1 ? 'thread' : 'threads'}</>
+						) : (
+							<>User has not created any posts yet</>
+						)}
+					</p>
+					<p className='text-sm sm:text-md text-muted-foreground'>
+						{user._count.comments ? (
+							<>{user._count.comments} {user._count.comments === 1 ? 'comment' : 'comments'}</>
+						) : (
+							<>User has not created any comments yet</>
+						)}
 					</p>
 				</CardContent>
 			</Card>

@@ -14,9 +14,19 @@ export async function GET(
 			where: { username },
 			select: {
 				username: true,
-				role: true
+				role: true,
+				createdAt: true,
+				_count: {
+					select: {
+						threads: true,
+						comments: true
+					}
+				}
 			}
 		});
+		  
+
+		console.log(user);
  
 		if (!user) {
 			return NextResponse.json(
