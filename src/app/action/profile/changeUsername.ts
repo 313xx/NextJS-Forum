@@ -10,48 +10,50 @@ export const changeUsername = async (oldUsername: string, newUsername: string) =
 	if (!newUsername || !oldUsername) {
 		return { success: false, message: 'Username is required' };
 	}
-    
+	
 	try {
 		const sessionToken = cookies().get(SESSION_COOKIE_NAME)?.value ?? null;
-       
+
 		if (!sessionToken)
 			return { success: false, message: 'You are not logged in or your session is invalid' };
-       
+
 		const authResult = await validateSession(sessionToken);
-       
+
 		if (!authResult || !authResult.user)
 			return { success: false, message: 'You are not logged in or your session is invalid' };
-        
+
 		const existingUser = await prisma.user.findUnique({
 			where: {
 				username: oldUsername
 			}
 		});
-        
+
 		if (!existingUser || existingUser.id !== authResult.user.id) {
 			return { success: false, message: 'You are not authorized to change this username' };
 		}
-        
+
 		const usernameExists = await prisma.user.findUnique({
 			where: {
 				username: newUsername
 			}
 		});
-        
+
 		if (usernameExists) {
 			return { success: false, message: 'Username is already taken' };
 		}
-        
-		await prisma.user.update({
-			where: {
-				id: existingUser.id
-			},
-			data: {
-				username: newUsername
-			}
+
+		await prisma.$transaction(async (tx) => {
+			await tx.user.update({
+				where: {
+					id: existingUser.id
+				},
+				data: {
+					username: newUsername
+				}
+			});
 		});
-        
-		return { success: true, user: 'Username updated successfully' };
+
+		return { success: true, message: 'Username updated successfully' };
 	} catch (error) {
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			return { success: false, message: 'Database query error' };
