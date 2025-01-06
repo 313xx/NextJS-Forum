@@ -24,12 +24,23 @@ import {
 	DialogFooter,
 	DialogClose
 } from '@/components/ui/dialog';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle
+} from '@/components/ui/alert-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const categoryFormSchema = z.object({
 	name: z.string()
@@ -46,6 +57,7 @@ type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 interface AdminCategoryFormProps {
 	onCategorySubmit: (data: CategoryFormValues) => Promise<{ success: boolean; message: string }>;
 	onCategoryUpdate?: (id: string, data: CategoryFormValues) => Promise<{ success: boolean; message: string }>;
+	onCategoryDelete?: (id: string) => Promise<{ success: boolean; message: string }>;
 	isLoading?: boolean;
 	existingCategories?: Array<CategoryFormValues & { id: string }>;
 }
@@ -53,10 +65,13 @@ interface AdminCategoryFormProps {
 const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 	onCategorySubmit,
 	onCategoryUpdate,
+	onCategoryDelete,
 	isLoading = false,
 	existingCategories = []
 }) => {
+	const router = useRouter();
 	const [isDialogOpen, setIsDialogOpen,] = useState(false);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen,] = useState(false);
 	const [editingCategory, setEditingCategory,] = useState<(CategoryFormValues & { id: string }) | null>(null);
 
 	const categoryForm = useForm<CategoryFormValues>({
@@ -83,7 +98,8 @@ const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 				});
 				categoryForm.reset();
 				setIsDialogOpen(false);
-				setEditingCategory(null);
+				setEditingCategory(null);	
+				router.refresh();
 			} else {
 				toast({
 					variant: 'destructive',
@@ -95,7 +111,40 @@ const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 			toast({
 				variant: 'destructive',
 				title: 'Error',
-				description: `Failed to ${editingCategory ? 'update' : 'create'} category Error: ${(result as { message: string }).message}`
+				description: `Failed to ${editingCategory ? 'update' : 'create'} category: "${(result as { message: string }).message}"`
+			});
+		}
+	};
+
+	const handleDeleteCategory = async () => {
+		if (!editingCategory || !onCategoryDelete) return;
+
+		try {
+			const result = await onCategoryDelete(editingCategory.id);
+			
+			if (result.success) {
+				toast({
+					title: 'Category Deleted',
+					description: 'Successfully deleted category'
+				});
+
+				setIsDialogOpen(false);
+				setIsDeleteDialogOpen(false);
+				setEditingCategory(null);
+				categoryForm.reset();
+				router.refresh();
+			} else {
+				toast({
+					variant: 'destructive',
+					title: 'Error',
+					description: result.message
+				});
+			}
+		} catch (result) {
+			toast({
+				variant: 'destructive',
+				title: 'Error',
+				description: `Failed to delete category: "${(result as { message: string }).message}"`
 			});
 		}
 	};
@@ -178,10 +227,7 @@ const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 										type='button'
 										variant='ghost'
 										className='h-8 w-8 p-0 text-muted-foreground'
-										onClick={() => {
-											// TODO: Add delete handler
-											console.log('Delete category');
-										}}
+										onClick={() => setIsDeleteDialogOpen(true)}
 									>
 										<Trash2 className='h-4 w-4 stroke-red-500' />
 									</Button>
@@ -273,6 +319,27 @@ const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 					</DialogContent>
 				</Dialog>
 			</div>
+
+			<AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you sure?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently delete the category
+							&quot;{editingCategory?.name}&quot;.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={handleDeleteCategory}
+							className='bg-red-500 hover:bg-red-600'
+						>
+							Delete
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 
 			<div className='space-y-4'>
 				{existingCategories.map((category) => (
