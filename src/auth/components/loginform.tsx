@@ -24,7 +24,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
-	const { user } = useAuth();
+	const { authenticatedUser } = useAuth();
 	
 	const [error, setError,] = useState<string | null>(null);
     
@@ -48,7 +48,7 @@ export function LoginForm() {
 		}
 	};
 
-	if (user?.username)
+	if (authenticatedUser)
 		redirect('/');
 
 	return (

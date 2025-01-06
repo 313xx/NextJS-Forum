@@ -135,7 +135,7 @@ export async function Navbar() {
 					{user ? (
 						<div className='flex items-center space-x-2'>
 							<Dialog>
-								<DialogTrigger>
+								<DialogTrigger asChild>
 									<Button className={dialogStyling} variant={'outline'}>Search...</Button>
 								</DialogTrigger>	
 								<DialogTitle ></DialogTitle>
@@ -214,12 +214,13 @@ export async function Navbar() {
 											</Link>
 										))}
 										<form action={logout}>
-											<button
+											<Button
 												type='submit'
+												variant={'ghost'}
 												className='w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-900'
 											>
 												Logout
-											</button>
+											</Button>
 										</form>
 									</div>
 								</PopoverContent>
@@ -228,7 +229,7 @@ export async function Navbar() {
 					) : (
 						<div className='flex items-center space-x-4'>
 							<Dialog>
-								<DialogTrigger>
+								<DialogTrigger asChild>
 									<Button className={dialogStyling} variant={'outline'}>Search</Button>
 								</DialogTrigger>
 								<DialogTitle ></DialogTitle>

@@ -191,7 +191,7 @@ export default function SearchUserComponent() {
 								<div className='space-y-4 mb-4'>
 									{data?.users.map((user: User) => (
 										<div
-											key={user.id}
+											key={user.username}
 											className='flex items-center space-x-4 p-3 border rounded-lg hover:bg-accent transition-colors'
 										>
 											<Avatar>

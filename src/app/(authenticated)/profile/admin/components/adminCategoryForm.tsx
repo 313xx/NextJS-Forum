@@ -196,7 +196,7 @@ const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 				<div>
 					<h2 className='text-lg font-semibold'>Forum Categories</h2>
 					<p className='text-sm text-muted-foreground'>
-						Manage your forum categories and their settings
+						Manage the forums categories and their settings
 					</p>
 				</div>
 				<Dialog open={isDialogOpen} onOpenChange={(open) => {
