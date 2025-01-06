@@ -8,8 +8,12 @@ export type User = {
 	};
 };
   
-
 export type ServerActionResponse = {
 	success: boolean;
 	message: string;
+}
+
+export type Categories = {
+	name: string;
+	description: string;
 }

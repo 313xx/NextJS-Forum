@@ -2,7 +2,7 @@ import { Navbar } from '@/components/navbar';
 import { User } from '@/types/types';
 import UserNotFoundComponent from './components/usernotfoundcomponent';
 import ProfileComponent from './components/ProfileComponent';
-import { deleteUser } from '@/app/action/admin/deleteUser';
+import { deleteUser } from '@/app/action/admin/user/deleteUser';
 
 async function fetchUser(username: string): Promise<User | null> {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/get-user/${username}`, {

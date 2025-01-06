@@ -43,7 +43,13 @@ export const validateSession = async (sessionToken: string) => {
 			id: sessionId
 		},
 		include: {
-			user: true
+			user: {
+				select: {
+					role: true,
+					username: true,
+					id: true
+				}
+			}
 		}
 	});
   

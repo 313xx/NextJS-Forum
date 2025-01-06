@@ -45,13 +45,8 @@ import {
 	CommandSeparator
 } from '@/components/ui/command';
 import { Button } from './ui/button';
+import { getCategories } from '@/app/action/categories/getCategories';
   
-const categories = [
-	{ title: 'General Discussion', href: '/categories/general' },
-	{ title: 'Help & Support', href: '/categories/help' },
-	{ title: 'Feedback', href: '/categories/feedback' },
-];
-
 const forums = [
 	{ title: 'Something', href: '/forums/something' },
 	{ title: 'Off-Topic', href: '/forums/off-topic' },
@@ -65,7 +60,8 @@ const dialogStyling = 'w-56 h-8 justify-start rounded-md dark:bg-[#17171a] dark:
 
 export async function Navbar() {
 	const { user } = await getAuth();
-
+	const categories = await getCategories();
+	
 	return (
 		<nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-black/80 dark:border-gray-800'>
 			<div className='max-w-8xl mx-auto'>
@@ -107,16 +103,18 @@ export async function Navbar() {
 									</NavigationMenuTrigger>
 									<NavigationMenuContent>
 										<ul className='grid w-[300px] gap-3 p-4 md:w-[400px] bg-white dark:bg-black shadow-lg rounded-lg'>
-											{categories.map((category) => (
-												<ListItem
-													key={category.title}
-													title={category.title}
-													href={category.href}
-													className='hover:bg-gray-100 dark:hover:bg-gray-900'
-												>
-													Explore {category.title} topics.
-												</ListItem>
-											))}
+											{categories
+												.filter((category) => category.isActive)
+												.map((category) => (
+													<ListItem
+														key={category.name}
+														title={category.name}
+														href={`/categories/${category.name.toLowerCase()}`}
+														className='hover:bg-gray-100 dark:hover:bg-gray-900'
+													>
+														{category.description}
+													</ListItem>
+												))}
 										</ul>
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -295,7 +293,7 @@ const ListItem = React.forwardRef<
 					{...props}
 				>
 					<div className='text-sm font-medium leading-none text-gray-900 dark:text-white'>{title}</div>
-					<p className='line-clamp-2 text-sm leading-snug text-gray-600 dark:text-gray-400'>
+					<p className='line-clamp-2 text-sm ml-2 leading-snug text-gray-600 dark:text-gray-400'>
 						{children}
 					</p>
 				</a>

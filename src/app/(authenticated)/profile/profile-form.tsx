@@ -145,7 +145,7 @@ const ProfileForm: React.FC<ProfileFormComponentProps> = ({ changeUsername }) =>
 													{...field} 
 												/>
 											</FormControl>
-											<FormDescription>
+											<FormDescription className='ml-2'>
 												4-15 characters long
 											</FormDescription>
 											<FormMessage />

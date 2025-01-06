@@ -1,15 +1,15 @@
 import { Metadata } from 'next';
-
 import { SidebarNav } from './components/sidebar-nav';
 import { Separator } from '@/components/ui/separator';
 import { Navbar } from '@/components/navbar';
+import { getAuth } from '@/auth/cookie';
 
 export const metadata: Metadata = {
 	title: 'Profile Settings',
 	description: 'Edit your profile.'
 };
 
-const sidebarNavItems = [
+const allSidebarNavItems = [
 	{
 		title: 'Profile',
 		href: '/profile'
@@ -18,21 +18,31 @@ const sidebarNavItems = [
 		title: 'Appearance',
 		href: '/profile/appearance'
 	},
+	{
+		title: 'Admin',
+		href: '/profile/admin'
+	},
 ];
 
 interface SettingsLayoutProps {
-	children: React.ReactNode
+	children: React.ReactNode;
 }
 
-export default function SettingsLayout({ children }: SettingsLayoutProps) {
+export default async function SettingsLayout({ children }: SettingsLayoutProps) {
+	const { user } = await getAuth();
+
+	const sidebarNavItems = allSidebarNavItems.filter(
+		(item) => item.title !== 'Admin' || user?.role === 'ADMIN'
+	);
+
 	return (
 		<>
 			<Navbar/>
 			<div className='block space-y-6 p-10 pb-16'>
 				<div className='space-y-0.5'>
-					<h2 className='text-2xl font-bold tracking-tight'>Settings</h2>
+					<h2 className='text-2xl font-bold tracking-tight'>Profile</h2>
 					<p className='text-muted-foreground'>
-						Manage your account settings and set e-mail preferences.
+						Manage your account
 					</p>
 				</div>
 				<Separator className='my-6' />

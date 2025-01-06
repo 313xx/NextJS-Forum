@@ -30,7 +30,7 @@ export const deleteUser = async (username: string) => {
 		const currentUser = authResult.user;
 
 		if (currentUser.role !== 'ADMIN') 
-			return { success: false, message: 'Permission denied. Only admins can delete users.' };
+			return { success: false, message: 'Permission denied' };
 
 		await prisma.$transaction(async (transaction) => {
 			const user = await transaction.user.findUnique({
