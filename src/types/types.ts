@@ -1,5 +1,4 @@
 export type User = {
-	id: string | null | undefined;
 	username: string;
 	role: string;
 	createdAt: Date;

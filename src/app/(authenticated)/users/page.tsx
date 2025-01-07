@@ -1,12 +1,13 @@
 import { Navbar } from '@/components/navbar';
 import SearchUserComponent from './components/searchusercomponent';
+import { getMultipleUsers } from '@/app/action/admin/user/getMultipleUsers';
 
-export default function SettingsProfilePage() {
+export default function UsersPage() {
 	return (
 		<div>
-			<Navbar/>
+			<Navbar />
 
-			<SearchUserComponent />
+			<SearchUserComponent getUsers={getMultipleUsers} />
 		</div>
 	);
 }

@@ -14,9 +14,7 @@ import {
 	PaginationPrevious
 } from '@/components/ui/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
-import { intendedError } from '@/utils/utils';
 import { Search } from 'lucide-react';
-
 import {
 	Select,
 	SelectContent,
@@ -24,42 +22,20 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select';
-import { User } from '@/types/types';
 import { redirect } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import { getMultipleUsers } from '@/app/action/admin/user/getMultipleUsers';
 
-type UserResponse = {
-	users: User[];
-	pagination: {
-		currentPage: number;
-		pageSize: number;
-		totalUsers: number;
-		totalPages: number;
-	};
+type usersResponse = {
+	username: string,
+	role: string,
 };
 
-const fetchUsers = async (page: number = 1, limit: number = 10, search: string = ''): Promise<UserResponse> => {
-	try {
-		const res = await fetch(`/api/get-users?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			cache: 'no-store'
-		});
+type SearchUserComponentProps = {
+	getUsers: typeof getMultipleUsers;
+}
 
-		if (!res.ok) {
-			throw new Error('Failed to fetch users');
-		}
-
-		return await res.json() as UserResponse;
-	} catch (error) {
-		intendedError('Error fetching users:', error);
-		throw error;
-	}
-};
-
-export default function SearchUserComponent() {
+export default function SearchUserComponent({ getUsers }: SearchUserComponentProps) {
 	const [inputSearchTerm, setInputSearchTerm,] = useState('');
 	const [searchTerm, setSearchTerm,] = useState('');
 	const [currentPage, setCurrentPage,] = useState(1);
@@ -71,7 +47,11 @@ export default function SearchUserComponent() {
 		isError
 	} = useQuery({
 		queryKey: ['users', currentPage, usersPerPage, searchTerm,],
-		queryFn: () => fetchUsers(currentPage, usersPerPage, searchTerm),
+		queryFn: () => getUsers({ 
+			page: currentPage, 
+			limit: usersPerPage, 
+			search: searchTerm 
+		}),
 		staleTime: 1000 * 60 * 5,
 		retry: 2,
 		refetchOnWindowFocus: false
@@ -189,7 +169,7 @@ export default function SearchUserComponent() {
 						) : (
 							<>
 								<div className='space-y-4 mb-4'>
-									{data?.users.map((user: User) => (
+									{data?.users.map((user: usersResponse) => (
 										<div
 											key={user.username}
 											className='flex items-center space-x-4 p-3 border rounded-lg hover:bg-accent transition-colors'

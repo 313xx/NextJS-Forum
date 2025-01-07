@@ -26,7 +26,7 @@ import {
 	AlertDialogTrigger 
 } from '@/components/ui/alert-dialog';
 
-import { MoreVertical, Trash2, Shield } from 'lucide-react';
+import { MoreVertical, Trash2, Shield, MessageCircle, FileText } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { toast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
@@ -52,7 +52,6 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 				title: 'Successfully removed',
 				description: 'User has been removed'
 			});
-
 			router.push('/');
 		} else {
 			toast({
@@ -62,110 +61,111 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 		}
 	};
 
-	if (isLoading) {
-		return (
-			<ProfileSkeleton/>
-		);
-	}
+	if (isLoading) return <ProfileSkeleton/>;
 
 	return (
-		<div>
+		<div className='min-h-screen bg-gradient-to-b from-background to-muted/20 py-8'>
 			<Toaster/>
-			<Card className='w-full max-w-md mx-auto mt-8 sm:mt-16 md:mt-32 p-4 sm:p-6'>
-				<CardHeader>
-					<div className='flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 relative'>
-						<div className='flex flex-col items-center'>
-							<Avatar className='h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-sm'>
+			<Card className='w-full max-w-2xl mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300'>
+				<CardHeader className='pb-6'>
+					<div className='flex flex-col sm:flex-row items-start gap-6 relative'>
+						<div className='flex flex-col items-center sm:items-start gap-3 w-full sm:w-auto'>
+							<Avatar className='h-24 w-24 rounded-lg ring-2 ring-primary/10'>
 								<AvatarImage 
 									src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`}
 									alt={user.username}
+									className='object-cover'
 								/>
 								<AvatarFallback><Skeleton/></AvatarFallback>
 							</Avatar>
-							<div className='mt-2 flex justify-center flex-col gap-2'>
-								<Badge className='text-xs text-center'>
-									{user.role}
-								</Badge>
-							</div>
-						</div>
-						<div className='text-center sm:text-left space-y-1 w-full'>
-							<h2 className='text-base sm:text-lg md:text-xl font-semibold truncate'>
-								{user.username}
-							</h2>
-							<p className='text-sm sm:text-md text-muted-foreground'>
-								Bio
-							</p>
-							<Badge className='text-xs mt-2' variant={'outline'}>
-								User joined: {user.createdAt.toString().split('T')[0]}
+							<Badge 
+								className='px-3 py-1 text-sm font-medium capitalize self-center'
+								variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
+							>
+								{user.role.toLowerCase()}
 							</Badge>
 						</div>
 
-						{authenticatedUser?.role === 'ADMIN' && authenticatedUser.username !== user.username && (
-							<AlertDialog onOpenChange={(open) => setAlertIsOpened(open)}>
-								{!alertIsOpened && (
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button variant='ghost' size='icon'>
-												<MoreVertical className='h-4 w-4' />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align='center'>
-											<DropdownMenuLabel className='text-center'>Admin Actions</DropdownMenuLabel>
-											<DropdownMenuSeparator />
-
-											<DropdownMenuItem>
-												<Shield className='mr-2 h-4 w-4' /> Change Role
-											</DropdownMenuItem>
-
-											<AlertDialogTrigger asChild>
-												<DropdownMenuItem className='text-destructive focus:text-destructive'>
-													<Trash2 className='mr-2 h-4 w-4' /> Delete User
-												</DropdownMenuItem>
-											</AlertDialogTrigger>
-										</DropdownMenuContent>
-									</DropdownMenu>
+						<div className='flex-1'>
+							<div className='flex items-start justify-between'>
+								<h2 className='text-2xl font-bold tracking-tight'>{user.username}</h2>
+								{authenticatedUser?.role === 'ADMIN' && authenticatedUser.username !== user.username && (
+									<AlertDialog onOpenChange={setAlertIsOpened}>
+										{!alertIsOpened && (
+											<DropdownMenu>
+												<DropdownMenuTrigger asChild>
+													<Button variant='ghost' size='icon' className='hover:bg-muted'>
+														<MoreVertical className='h-4 w-4' />
+													</Button>
+												</DropdownMenuTrigger>
+												<DropdownMenuContent align='end' className='w-48'>
+													<DropdownMenuLabel>Admin Actions</DropdownMenuLabel>
+													<DropdownMenuSeparator />
+													<DropdownMenuItem className='cursor-pointer'>
+														<Shield className='mr-2 h-4 w-4' /> Change Role
+													</DropdownMenuItem>
+													<AlertDialogTrigger asChild>
+														<DropdownMenuItem className='text-destructive focus:text-destructive cursor-pointer'>
+															<Trash2 className='mr-2 h-4 w-4' /> Delete User
+														</DropdownMenuItem>
+													</AlertDialogTrigger>
+												</DropdownMenuContent>
+											</DropdownMenu>
+										)}
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+												<AlertDialogDescription>
+													This action cannot be undone. This will permanently delete the user account.
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													className='bg-destructive hover:bg-destructive/90'
+													onClick={(e) => {
+														e.preventDefault();
+														void handleDeleteUser();
+													}}
+												>
+													Delete User
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
 								)}
-
-								<AlertDialogContent>
-									<AlertDialogHeader>
-										<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-										<AlertDialogDescription>
-											This action cannot be undone. This will permanently delete the user account.
-										</AlertDialogDescription>
-									</AlertDialogHeader>
-									<AlertDialogFooter>
-										<AlertDialogCancel>Cancel</AlertDialogCancel>
-										<AlertDialogAction
-											className='bg-destructive'
-											onClick={(e) => {
-												e.preventDefault();
-												void handleDeleteUser();
-											}}
-										>
-											Delete User
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
-						)}
+							</div>
+              
+							<p className='text-muted-foreground'>
+								Member since {new Date(user.createdAt).toLocaleDateString('en-US', { 
+									year: 'numeric', 
+									month: 'long', 
+									day: 'numeric'
+								})}
+							</p>
+						</div>
 					</div>
 				</CardHeader>
-				<Separator className='my-4' />
-				<CardContent>
-					<p className='text-sm sm:text-md text-muted-foreground'>
-						{user._count.threads ? (
-							<>{user._count.threads} {user._count.threads === 1 ? 'thread' : 'threads'}</>
-						) : (
-							<>User has not created any posts yet</>
-						)}
-					</p>
-					<p className='text-sm sm:text-md text-muted-foreground'>
-						{user._count.comments ? (
-							<>{user._count.comments} {user._count.comments === 1 ? 'comment' : 'comments'}</>
-						) : (
-							<>User has not created any comments yet</>
-						)}
-					</p>
+        
+				<Separator />
+        
+				<CardContent className='pt-6'>
+					<div className='grid grid-cols-2 gap-4'>
+						<div className='flex items-center gap-2 p-4 rounded-lg bg-muted/50'>
+							<FileText className='h-5 w-5 text-muted-foreground' />
+							<div>
+								<p className='text-sm font-medium'>Threads</p>
+								<p className='text-2xl font-bold'>{user._count.threads}</p>
+							</div>
+						</div>
+						<div className='flex items-center gap-2 p-4 rounded-lg bg-muted/50'>
+							<MessageCircle className='h-5 w-5 text-muted-foreground' />
+							<div>
+								<p className='text-sm font-medium'>Comments</p>
+								<p className='text-2xl font-bold'>{user._count.comments}</p>
+							</div>
+						</div>
+					</div>
 				</CardContent>
 			</Card>
 		</div>
