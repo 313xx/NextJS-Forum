@@ -159,6 +159,7 @@ const ProfileForm: React.FC<ProfileFormComponentProps> = ({ changeUsername }) =>
 											Cancel
 										</Button>
 									</DialogClose>
+									<Button type='submit'>Change Username</Button>
 								</DialogFooter>
 							</form>
 						</Form>
