@@ -30,8 +30,6 @@ import { getAuth } from '@/auth/cookie';
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
-	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
 
@@ -51,44 +49,43 @@ const profileControl = [
 	{ title: 'Settings', href: '/profile' },
 ];
 
-const dialogStyling = 'w-56 h-8 justify-start rounded-md dark:bg-[#17171a] dark:text-gray-400';
+const dialogStyling = 'w-72 h-9 justify-start rounded-lg font-medium tracking-wide dark:bg-[#17171a] dark:text-gray-300 transition-colors hover:dark:bg-[#1c1c20]';
 
 export async function Navbar() {
 	const { user } = await getAuth();
 	const categories = await getActiveCategories();
 	
 	return (
-		<nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-black/80 dark:border-gray-800'>
-			<div className='max-w-8xl mx-auto'>
-				<div className='flex items-center justify-between h-14'>
+		<nav className='sticky top-0 z-50 w-full bg-white/90 backdrop-blur-lg border-b border-gray-200 dark:bg-black/90 dark:border-gray-800/80 transition-colors duration-200'>
+			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+				<div className='flex items-center justify-between h-16'>
 					<NavigationMenu className='flex-grow'>
-						<NavigationMenuList className='flex items-center'>
+						<NavigationMenuList className='flex items-center gap-6'>
 							<NavigationMenuItem>
 								<Link href='/' legacyBehavior passHref>
-									<NavigationMenuLink className='text-lg font-bold text-gray-900 dark:text-white hover:opacity-80 transition-opacity'>
+									<NavigationMenuLink className='text-xl font-bold text-gray-900 dark:text-white hover:opacity-80 transition-all duration-200'>
 										Forum Name
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>
 
-							<div className='flex items-center'>
+							<div className='flex items-center gap-6'>
 								<NavigationMenuItem>
-									<NavigationMenuTrigger className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors'>
+									<NavigationMenuTrigger className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200 font-medium'>
 										Categories
 									</NavigationMenuTrigger>
 									<NavigationMenuContent>
-										<ul className='grid w-[300px] gap-3 p-4 md:w-[400px] bg-white dark:bg-black shadow-lg rounded-lg'>
-											{categories
-												.map((category) => (
-													<ListItem
-														key={category.name}
-														title={category.name}
-														href={`/categories/${category.name.toLowerCase()}`}
-														className='hover:bg-gray-100 dark:hover:bg-gray-900'
-													>
-														{category.description}
-													</ListItem>
-												))}
+										<ul className='grid w-[320px] gap-3 p-4 md:w-[420px] bg-white dark:bg-black border dark:border-gray-800 shadow-lg rounded-lg'>
+											{categories.map((category) => (
+												<ListItem
+													key={category.name}
+													title={category.name}
+													href={`/categories/${category.name.toLowerCase()}`}
+													className='hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors duration-200'
+												>
+													{category.description}
+												</ListItem>
+											))}
 										</ul>
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -96,7 +93,7 @@ export async function Navbar() {
 								{user && (
 									<NavigationMenuItem>
 										<Link href='/users' legacyBehavior passHref>
-											<NavigationMenuLink className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors text-sm ml-4'>
+											<NavigationMenuLink className='text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200 font-medium'>
 												Users
 											</NavigationMenuLink>
 										</Link>
@@ -107,13 +104,11 @@ export async function Navbar() {
 					</NavigationMenu>
 
 					{user ? (
-						<div className='flex items-center space-x-2'>
+						<div className='flex items-center gap-4'>
 							<Dialog>
 								<DialogTrigger asChild>
 									<Button className={dialogStyling} variant={'outline'}>Search...</Button>
 								</DialogTrigger>	
-								<DialogTitle ></DialogTitle>
-								<DialogDescription></DialogDescription>
 								<DialogContent>
 									<Command>
 										<CommandInput placeholder='Search...' />
@@ -152,14 +147,14 @@ export async function Navbar() {
 
 							<Popover>
 								<PopoverTrigger>
-									<Avatar className='cursor-pointer'>
+									<Avatar className='h-9 w-9 cursor-pointer ring-2 ring-transparent hover:ring-gray-200 dark:hover:ring-gray-800 transition-all duration-200'>
 										<AvatarImage 
 											src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`} 
-											alt='Avatar' 
-											className='hover:opacity-80 transition-opacity'
+											alt='Avatar'
+											className='object-cover'
 										/>
 										<AvatarFallback>
-											<Skeleton className='h-10 w-10 rounded-sm' />
+											<Skeleton className='h-9 w-9 rounded-full' />
 										</AvatarFallback>
 									</Avatar>
 								</PopoverTrigger>
@@ -194,49 +189,22 @@ export async function Navbar() {
 							</Popover>
 						</div>
 					) : (
-						<div className='flex items-center space-x-4'>
-							<Dialog>
-								<DialogTrigger asChild>
-									<Button className={dialogStyling} variant={'outline'}>Search</Button>
-								</DialogTrigger>
-								<DialogTitle ></DialogTitle>
-								<DialogDescription></DialogDescription>
-								<DialogContent>
-									<Command>
-										<CommandInput placeholder='Search...' />
-										<CommandList>
-											<CommandEmpty>No results found.</CommandEmpty>
-											<CommandGroup heading='Suggestions'>
-												<CommandItem>
-													<Link href='forums' legacyBehavior passHref>
-														<a className='w-full'>
-															Forums
-														</a>
-													</Link>
-												</CommandItem>
-												<CommandItem>
-													<Link href='categories' legacyBehavior passHref>
-														<a className='w-full'>
-															Categories
-														</a>
-													</Link>
-												</CommandItem>
-											</CommandGroup>
-										</CommandList>
-									</Command>
-								</DialogContent>
-							</Dialog>
+						<div className='flex items-center gap-4'>
 
-							<Link href='/login' legacyBehavior passHref>
-								<a className={'bg-white text-black dark:bg-black dark:text-white border-2 px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity text-md'}>
+							<div className='flex items-center gap-3'>
+								<Link
+									href='/login'
+									className='px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200'
+								>
 									Log in
-								</a>
-							</Link>
-							<Link href='/register' legacyBehavior passHref>
-								<a className={'bg-black text-white dark:bg-white dark:text-black px-4 py-1.5 rounded-md hover:opacity-90 transition-opacity text-md'}>
+								</Link>
+								<Link
+									href='/register'
+									className='px-4 py-2 text-sm font-medium text-white dark:text-black bg-black dark:bg-white rounded-lg hover:opacity-90 transition-all duration-200'
+								>
 									Sign up
-								</a>
-							</Link>
+								</Link>
+							</div>
 						</div>
 					)}
 				</div>
@@ -255,13 +223,13 @@ const ListItem = React.forwardRef<
 				<a
 					ref={ref}
 					className={cn(
-						'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors',
+						'block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-colors duration-200',
 						className
 					)}
 					{...props}
 				>
 					<div className='text-sm font-medium leading-none text-gray-900 dark:text-white'>{title}</div>
-					<p className='line-clamp-2 text-sm ml-2 leading-snug text-gray-600 dark:text-gray-400'>
+					<p className='line-clamp-2 text-sm leading-snug text-gray-600 dark:text-gray-400 mt-1'>
 						{children}
 					</p>
 				</a>

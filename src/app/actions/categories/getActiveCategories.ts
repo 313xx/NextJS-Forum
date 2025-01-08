@@ -14,7 +14,12 @@ export async function getActiveCategories() {
 				id: true,
 				name: true,
 				description: true,
-				isActive: true
+				isActive: true,
+				_count: {
+					select: {
+						threads: true
+					}
+				}
 			}
 		});
         
