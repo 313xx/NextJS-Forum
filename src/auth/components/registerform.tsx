@@ -34,7 +34,7 @@ const registerSchema = z.object({
 	});
   
 export function RegisterForm() {
-	const { user } = useAuth();
+	const { authenticatedUser } = useAuth();
 	const [error, setError,] = useState<string | null>(null);
    
 	const form = useForm<z.infer<typeof registerSchema>>({
@@ -58,7 +58,7 @@ export function RegisterForm() {
 		}
 	};
 
-	if (user?.username) 
+	if (authenticatedUser) 
 		redirect('/');
 
 	return (

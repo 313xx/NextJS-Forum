@@ -45,8 +45,8 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 	const [alertIsOpened, setAlertIsOpened,] = useState(false);
 	const router = useRouter();
 
-	const handleDeleteUser = async () => {
-		const result = await deleteUser(user.username) as unknown as ServerActionResponse;
+	const handleDeleteUser = () => {
+		const result = deleteUser(user.username) as unknown as ServerActionResponse;
 		if (result.success) {
 			toast({
 				title: 'Successfully removed',
@@ -78,6 +78,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 								/>
 								<AvatarFallback><Skeleton/></AvatarFallback>
 							</Avatar>
+							
 							<Badge 
 								className='px-3 py-1 text-sm font-medium capitalize self-center'
 								variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
@@ -88,7 +89,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 
 						<div className='flex-1'>
 							<div className='flex items-start justify-between'>
-								<h2 className='text-2xl font-bold tracking-tight'>{user.username}</h2>
+								<h2 className='text-3xl font-bold tracking-tight'>{user.username}</h2>
 								{authenticatedUser?.role === 'ADMIN' && authenticatedUser.username !== user.username && (
 									<AlertDialog onOpenChange={setAlertIsOpened}>
 										{!alertIsOpened && (

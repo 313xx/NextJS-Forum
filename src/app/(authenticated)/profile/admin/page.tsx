@@ -1,9 +1,9 @@
 import React from 'react';
 import AdminCategoryForm from './components/adminCategoryForm';
-import { getCategories } from '@/app/action/categories/getCategories';
-import { createCategory } from '@/app/action/admin/category/createCategory';
-import { updateCategory } from '@/app/action/admin/category/updateCategory';
-import { deleteCategory } from '@/app/action/admin/category/deleteCategory';
+import { getCategories } from '@/app/actions/admin/category/getCategories';
+import { createCategory } from '@/app/actions/admin/category/createCategory';
+import { updateCategory } from '@/app/actions/admin/category/updateCategory';
+import { deleteCategory } from '@/app/actions/admin/category/deleteCategory';
 
 const AdminProfilePage: React.FC = async () => {
 	const categories = await getCategories();

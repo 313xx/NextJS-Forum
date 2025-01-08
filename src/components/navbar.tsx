@@ -45,13 +45,8 @@ import {
 	CommandSeparator
 } from '@/components/ui/command';
 import { Button } from './ui/button';
-import { getCategories } from '@/app/action/categories/getCategories';
+import { getActiveCategories } from '@/app/actions/categories/getActiveCategories';
   
-const forums = [
-	{ title: 'Something', href: '/forums/something' },
-	{ title: 'Off-Topic', href: '/forums/off-topic' },
-];
-
 const profileControl = [
 	{ title: 'Settings', href: '/profile' },
 ];
@@ -60,7 +55,7 @@ const dialogStyling = 'w-56 h-8 justify-start rounded-md dark:bg-[#17171a] dark:
 
 export async function Navbar() {
 	const { user } = await getAuth();
-	const categories = await getCategories();
+	const categories = await getActiveCategories();
 	
 	return (
 		<nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-black/80 dark:border-gray-800'>
@@ -78,33 +73,12 @@ export async function Navbar() {
 
 							<div className='flex items-center'>
 								<NavigationMenuItem>
-									<NavigationMenuTrigger className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors ml-4'>
-										Forums
-									</NavigationMenuTrigger>
-									<NavigationMenuContent>
-										<ul className='grid w-[300px] gap-3 p-4 md:w-[400px] bg-white dark:bg-black shadow-lg rounded-lg'>
-											{forums.map((forum) => (
-												<ListItem 
-													key={forum.title} 
-													title={forum.title} 
-													href={forum.href}
-													className='hover:bg-gray-100 dark:hover:bg-gray-900'
-												>
-													Visit the {forum.title} forum.
-												</ListItem>
-											))}
-										</ul>
-									</NavigationMenuContent>
-								</NavigationMenuItem>
-
-								<NavigationMenuItem>
 									<NavigationMenuTrigger className='text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors'>
 										Categories
 									</NavigationMenuTrigger>
 									<NavigationMenuContent>
 										<ul className='grid w-[300px] gap-3 p-4 md:w-[400px] bg-white dark:bg-black shadow-lg rounded-lg'>
 											{categories
-												.filter((category) => category.isActive)
 												.map((category) => (
 													<ListItem
 														key={category.name}
@@ -154,14 +128,7 @@ export async function Navbar() {
 													</Link>
 												</CommandItem>
 												<CommandItem>
-													<Link href='forums' legacyBehavior passHref>
-														<a className='w-full'>
-															Forums
-														</a>
-													</Link>
-												</CommandItem>
-												<CommandItem>
-													<Link href='categories' legacyBehavior passHref>
+													<Link href='/categories' legacyBehavior passHref>
 														<a className='w-full'>
 															Categories
 														</a>
@@ -171,7 +138,7 @@ export async function Navbar() {
 											<CommandSeparator />
 											<CommandGroup heading='Settings'>
 												<CommandItem>			
-													<Link href='profile' legacyBehavior passHref>
+													<Link href='/profile' legacyBehavior passHref>
 														<a className='w-full'>
 															Profile
 														</a>

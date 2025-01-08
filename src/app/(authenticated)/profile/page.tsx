@@ -1,5 +1,5 @@
 import ProfileForm from './profile-form';
-import { changeUsername } from '@/app/action/profile/changeUsername';
+import { changeUsername } from '@/app/actions/profile/changeUsername';
 
 export default function SettingsProfilePage() {
 	return (

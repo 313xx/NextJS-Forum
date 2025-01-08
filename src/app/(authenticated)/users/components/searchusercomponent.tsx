@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { redirect } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
-import { getMultipleUsers } from '@/app/action/admin/user/getMultipleUsers';
+import { getMultipleUsers } from '@/app/actions/users/getMultipleUsers';
 
 type usersResponse = {
 	username: string,
