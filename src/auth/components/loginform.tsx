@@ -97,7 +97,8 @@ export function LoginForm() {
 									<FormControl>
 										<Input 
 											{...field} 
-											type='password' 
+											type='password'
+											placeholder='Enter your password' 
 											required 
 										/>
 									</FormControl>
