@@ -24,7 +24,7 @@ export async function getActiveCategories() {
 		});
         
 		if (!categories || categories.length === 0) 
-			throw new Error('No active categories found');
+			return { success: false, message: 'Error fetching categories, no active categories' };
 		
 		return categories;
 	} catch (error) {

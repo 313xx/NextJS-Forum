@@ -91,11 +91,13 @@ export default async function HomePage() {
 				</div>
 
 				<div className='space-y-8'>
-					<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-						{categories.slice(0, 3).map((category) => (
-							<CategoryCard key={category.id} category={category} />
-						))}
-					</div>
+					{categories.length > 0 && (
+						<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+							{categories.slice(0, 3).map((category) => (
+								<CategoryCard key={category.id} category={category} />
+							))}
+						</div>
+					)}
 					<div className='flex justify-center'>
 						<Link href='/categories' legacyBehavior passHref>
 							<Button size='lg' variant={'ghost'}>View all categories</Button>

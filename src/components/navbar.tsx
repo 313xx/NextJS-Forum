@@ -75,8 +75,8 @@ export async function Navbar() {
 										Categories
 									</NavigationMenuTrigger>
 									<NavigationMenuContent>
-										<ul className='grid w-[320px] gap-3 p-4 md:w-[420px] bg-white dark:bg-black border dark:border-gray-800 shadow-lg rounded-lg'>
-											{categories.map((category) => (
+										<ul className='grid w-[320px] gap-3 p-4 md:w-[420px] bg-white dark:bg-black border dark:border-gray-800 shadow-lg rounded-lg mt-1'>
+											{categories.length > 0 && categories.map((category) => (
 												<ListItem
 													key={category.name}
 													title={category.name}

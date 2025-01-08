@@ -71,15 +71,15 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 					<div className='flex flex-col sm:flex-row items-start gap-6 relative'>
 						<div className='flex flex-col items-center sm:items-start gap-3 w-full sm:w-auto'>
 							<Avatar className='h-24 w-24 rounded-lg ring-2 ring-primary/10'>
-								<AvatarImage 
+								<AvatarImage
 									src={`https://avatar.vercel.sh/${user.username}.svg?text=${Array.from(user.username)[0].toUpperCase()}`}
 									alt={user.username}
 									className='object-cover'
 								/>
 								<AvatarFallback><Skeleton/></AvatarFallback>
 							</Avatar>
-							
-							<Badge 
+                            
+							<Badge
 								className='px-3 py-1 text-sm font-medium capitalize self-center'
 								variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
 							>
@@ -89,13 +89,47 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 
 						<div className='flex-1'>
 							<div className='flex items-start justify-between'>
-								<h2 className='text-3xl font-bold tracking-tight'>{user.username}</h2>
+								<div className='flex-1'>
+									<h2 className='text-3xl font-bold tracking-tight'>{user.username}</h2>
+									<p className='text-muted-foreground text-sm'>
+										Member since {new Date(user.createdAt).toLocaleDateString('en-US', { 
+											year: 'numeric', 
+											month: 'long', 
+											day: 'numeric'
+										})}
+									</p>
+									{user.userInfo?.bio && (
+										<p className='text-muted-foreground mt-2'>
+											{user.userInfo.bio}
+										</p>
+									)}
+								</div>
+
+								<div className='flex flex-col gap-2 ml-4'>
+									<Card className='w-36'>
+										<CardContent className='p-4'>
+											<div className='space-y-1'>
+												<p className='text-md font-medium text-muted-foreground'>Reputation</p>
+												<p className={`text-xl font-bold ${user.userInfo?.reputation ?? 0 >= 0 ? 'text-green-400' : 'text-red-400'}`}>{user.userInfo?.reputation ?? 0}</p>
+											</div>
+										</CardContent>
+									</Card>
+									<Card className='w-36'>
+										<CardContent className='p-4'>
+											<div className='space-y-1'>
+												<p className='text-md font-medium text-muted-foreground'>Rep Power</p>
+												<p className='text-xl font-bold'>{user.userInfo?.reputationPower}</p>
+											</div>
+										</CardContent>
+									</Card>
+								</div>
+
 								{authenticatedUser?.role === 'ADMIN' && authenticatedUser.username !== user.username && (
 									<AlertDialog onOpenChange={setAlertIsOpened}>
 										{!alertIsOpened && (
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
-													<Button variant='ghost' size='icon' className='hover:bg-muted'>
+													<Button variant='ghost' size='icon' className='hover:bg-muted ml-2'>
 														<MoreVertical className='h-4 w-4' />
 													</Button>
 												</DropdownMenuTrigger>
@@ -136,14 +170,6 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({ user, deleteUser })
 									</AlertDialog>
 								)}
 							</div>
-              
-							<p className='text-muted-foreground'>
-								Member since {new Date(user.createdAt).toLocaleDateString('en-US', { 
-									year: 'numeric', 
-									month: 'long', 
-									day: 'numeric'
-								})}
-							</p>
 						</div>
 					</div>
 				</CardHeader>

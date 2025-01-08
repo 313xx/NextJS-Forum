@@ -17,6 +17,13 @@ export async function getUser(username: string) {
 						threads: true,
 						comments: true
 					}
+				},
+				userInfo: {
+					select: {
+						bio: true,
+						reputation: true,
+						reputationPower: true
+					}
 				}
 			}
 		});

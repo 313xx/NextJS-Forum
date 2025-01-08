@@ -34,7 +34,7 @@ export async function getCategories() {
 		});
         
 		if (!categories || categories.length === 0) 
-			throw new Error('Error fetching categories');
+			return { success: false, message: 'Error fetching categories' };
  
 		return categories;
 	} catch (error) {

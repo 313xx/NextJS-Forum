@@ -136,14 +136,16 @@ export default async function AuthenticatedHomePage() {
 
 				<div className='grid md:grid-cols-3 gap-8'>
 					<div className='md:col-span-2 space-y-8'>
-						<div>
-							<h2 className='text-2xl font-bold mb-4'>Popular Categories</h2>
-							<div className='grid gap-6 md:grid-cols-2'>
-								{categories.slice(0, 4).map((category) => (
-									<CategoryCard key={category.id} category={category} />
-								))}
+						{categories.length > 0 && (
+							<div>
+								<h2 className='text-2xl font-bold mb-4'>Popular Categories</h2>
+								<div className='grid gap-6 md:grid-cols-2'>
+									{categories.slice(0, 4).map((category) => (
+										<CategoryCard key={category.id} category={category} />
+									))}
+								</div>
 							</div>
-						</div>
+						)}
 
 						<div>
 							<h2 className='text-2xl font-bold mb-4'>Community Stats</h2>

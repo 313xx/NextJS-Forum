@@ -8,17 +8,33 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(cuid())
+  id           String    @id @default(cuid())
   sessions     Session[]
-  username     String     @unique
+  username     String    @unique
   passwordHash String
-  role         String     @default("USER")
+  role         String    @default("USER")
   
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   
   threads      Thread[]
   comments     Comment[]
+  userInfo     UserInfo?
+}
+
+model UserInfo {
+  id              String   @id @default(cuid())
+  bio             String?
+  reputation      Int      @default(30)
+  reputationPower Int      @default(10)
+  
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([userId])
 }
 
 model Thread {
@@ -57,15 +73,14 @@ model Category {
   name        String   @unique
   description String?
   isActive    Boolean  @default(false)
-
   threads     Thread[]
 }
 
 model Session {
-  id        String    @id
+  id        String   @id
   expiresAt DateTime
   userId    String
-  user      User      @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
   
   @@index([userId])
 }

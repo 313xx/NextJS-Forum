@@ -6,6 +6,11 @@ export type User = {
 		threads: number;
 		comments: number;
 	};
+	userInfo: {
+		bio: string | null,
+		reputation: number,
+		reputationPower: number
+	} | null;
 };
   
 export type ServerActionResponse = {
