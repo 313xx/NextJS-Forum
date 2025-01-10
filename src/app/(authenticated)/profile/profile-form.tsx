@@ -107,11 +107,11 @@ const ProfileForm: React.FC<ProfileFormComponentProps> = ({ changeUsername }) =>
 	}
 
 	return (
-		<div className='space-y-8'>
+		<div className='space-y-6'>
 			<Toaster/>
 			<div className='flex items-center justify-between'>
 				<div>
-					<h2 className='text-lg font-semibold'>Username</h2>
+					<h2 className='text-lg'>Username</h2>
 					<p className='text-sm text-muted-foreground'>
 						{authenticatedUser?.username}
 					</p>

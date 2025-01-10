@@ -193,8 +193,8 @@ const AdminCategoryForm: React.FC<AdminCategoryFormProps> = ({
 			<Toaster />
       
 			<div className='flex items-center justify-between'>
-				<div>
-					<h2 className='text-lg font-semibold'>Forum Categories</h2>
+				<div className='space-y-0.5'>
+					<h3 className='text-lg font-semibold'>Forum Categories</h3>
 					<p className='text-sm text-muted-foreground'>
 						Manage the forums categories and their settings
 					</p>

@@ -4,19 +4,26 @@ const prisma = new PrismaClient();
 
 async function seed() {
 	try {
+		await prisma.reputationHistory.deleteMany({});
 		await prisma.session.deleteMany({});
 		await prisma.comment.deleteMany({});
 		await prisma.thread.deleteMany({});
 		await prisma.category.deleteMany({});
+		await prisma.userInfo.deleteMany({});
 		await prisma.user.deleteMany({});
 
 		const users = [
-			{ username: 'admin', password: '1234', role: 'ADMIN' },
-			{ username: 'user', password: '1234', role: 'USER' },
-			{ username: 'john_doe', password: 'john123', role: 'USER' },
-			{ username: 'jane_smith', password: 'jane123', role: 'USER' },
-			{ username: 'bob_wilson', password: 'bob123', role: 'USER' },
-			{ username: 'alice_brown', password: 'alice123', role: 'USER' },
+			{ username: 'admin', password: '1234', role: 'ADMIN', bio: 'Site administrator', reputation: 1000, reputationPower: 176 },
+			{ username: 'user', password: '1234', role: 'USER', bio: 'Regular user', reputation: 100, reputationPower: 85 },
+			{ username: 'john_doe', password: 'john123', role: 'USER', bio: 'Software developer and tech enthusiast', reputation: 450, reputationPower: 43 },
+			{ username: 'jane_smith', password: 'jane123', role: 'USER', bio: 'Health and wellness coach', reputation: 320, reputationPower: 94 },
+			{ username: 'bob_wilson', password: 'bob123', role: 'USER', bio: 'Tech blogger and analyst', reputation: 280, reputationPower: 132 },
+			{ username: 'alice_brown', password: 'alice123', role: 'USER', bio: 'Fitness enthusiast and nutritionist', reputation: 150, reputationPower: 23 },
+			{ username: 'sarah_parker', password: 'sarah123', role: 'USER', bio: 'Digital marketing specialist', reputation: 200, reputationPower: 44 },
+			{ username: 'mike_johnson', password: 'mike123', role: 'USER', bio: 'Full-stack developer', reputation: 380, reputationPower: 123 },
+			{ username: 'emma_davis', password: 'emma123', role: 'USER', bio: 'UI/UX designer', reputation: 290, reputationPower: 12 },
+			{ username: 'david_miller', password: 'david123', role: 'USER', bio: 'Data scientist', reputation: 420, reputationPower: 10 },
+			{ username: 'lisa_white', password: 'lisa123', role: 'USER', bio: 'Content creator', reputation: 180, reputationPower: 56 },
 		];
 
 		const createdUsers = {};
@@ -26,16 +33,23 @@ async function seed() {
 				data: {
 					username: user.username,
 					passwordHash,
-					role: user.role
+					role: user.role,
+					userInfo: {
+						create: {
+							bio: user.bio,
+							reputation: user.reputation,
+							reputationPower: user.reputationPower
+						}
+					}
 				}
 			});
 			createdUsers[user.username] = createdUser;
 		}
 
 		const categories = [
-			{ name: 'Technology', description: 'Threads about technology and innovation' },
-			{ name: 'Health', description: 'Health and wellness related threads' },
-			{ name: 'Education', description: 'Educational content and resources' },
+			{ name: 'Technology', description: 'Threads about technology and innovation', isActive: true },
+			{ name: 'Health', description: 'Health and wellness related threads', isActive: true },
+			{ name: 'Education', description: 'Educational content and resources', isActive: true },
 			{ name: 'Programming', description: 'Programming and software development' },
 			{ name: 'Lifestyle', description: 'Lifestyle and personal development' },
 		];
@@ -48,7 +62,6 @@ async function seed() {
 			createdCategories[category.name] = createdCategory;
 		}
 
-		// Create threads
 		const threads = [
 			{
 				title: 'Getting Started with Prisma',
@@ -121,8 +134,9 @@ async function seed() {
 			},
 		];
 
+		const createdComments = [];
 		for (const comment of comments) {
-			await prisma.comment.create({
+			const createdComment = await prisma.comment.create({
 				data: {
 					content: comment.content,
 					author: {
@@ -132,6 +146,55 @@ async function seed() {
 						connect: { id: createdThreads[comment.threadTitle].id }
 					}
 				}
+			});
+			createdComments.push(createdComment);
+		}
+
+		const reputationHistory = [
+			{
+				amount: 50,
+				reason: 'Excellent Prisma tutorial',
+				giverId: createdUsers.john_doe.id,
+				receiverId: createdUsers.admin.id,
+				threadId: createdThreads['Getting Started with Prisma'].id,
+				createdAt: new Date('2024-01-01')
+			},
+			{
+				amount: 30,
+				reason: 'Helpful health advice',
+				giverId: createdUsers.alice_brown.id,
+				receiverId: createdUsers.jane_smith.id,
+				threadId: createdThreads['Healthy Living Tips'].id,
+				createdAt: new Date('2024-01-02')
+			},
+			{
+				amount: 20,
+				reason: 'Insightful comment',
+				giverId: createdUsers.admin.id,
+				receiverId: createdUsers.john_doe.id,
+				commentId: createdComments[0].id,
+				createdAt: new Date('2024-01-03')
+			},
+			{
+				amount: 15,
+				reason: 'Helpful feedback',
+				giverId: createdUsers.jane_smith.id,
+				receiverId: createdUsers.alice_brown.id,
+				commentId: createdComments[1].id,
+				createdAt: new Date('2024-01-04')
+			},
+			{
+				amount: 100,
+				reason: 'Outstanding community contribution',
+				giverId: createdUsers.admin.id,
+				receiverId: createdUsers.john_doe.id,
+				createdAt: new Date('2024-01-05')
+			},
+		];
+
+		for (const history of reputationHistory) {
+			await prisma.reputationHistory.create({
+				data: history
 			});
 		}
 

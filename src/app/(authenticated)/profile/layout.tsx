@@ -19,6 +19,10 @@ const allSidebarNavItems = [
 		href: '/profile/appearance'
 	},
 	{
+		title: 'Reputation',
+		href: '/profile/reputation'
+	},
+	{
 		title: 'Admin',
 		href: '/profile/admin'
 	},
@@ -40,7 +44,7 @@ export default async function SettingsLayout({ children }: SettingsLayoutProps) 
 			<Navbar/>
 			<div className='block space-y-6 p-10 pb-16'>
 				<div className='space-y-0.5'>
-					<h2 className='text-2xl font-bold tracking-tight'>Profile</h2>
+					<h2 className='text-2xl font-bold tracking-tight'>Account overview</h2>
 					<p className='text-muted-foreground'>
 						Manage your account
 					</p>

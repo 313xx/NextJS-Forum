@@ -9,9 +9,9 @@ const AdminProfilePage: React.FC = async () => {
 	const categories = await getCategories();
 
 	return (
-		<div>
+		<>
 			<AdminCategoryForm existingCategories={categories} onCategorySubmit={createCategory} onCategoryUpdate={updateCategory} onCategoryDelete={deleteCategory}/>
-		</div>
+		</>
 	);
 };
 
