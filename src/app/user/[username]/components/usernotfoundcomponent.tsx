@@ -20,7 +20,7 @@ const UserNotFoundComponent = () => {
 							<p className='text-muted-foreground'>
 								We couldn’t find the user you’re looking for. Please check the username and try again.
 							</p>
-							<Link href='/'>
+							<Link href='/' >
 								<Button variant='outline' className='mt-6 text-sm'>Go Back Home</Button>
 							</Link>
 						</div>

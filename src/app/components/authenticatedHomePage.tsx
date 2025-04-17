@@ -174,7 +174,7 @@ export default async function AuthenticatedHomePage() {
 						<Card className='p-6'>
 							<h3 className='text-lg font-bold mb-4'>Quick Actions</h3>
 							<div className='space-y-3'>
-								<Link href='/profile' legacyBehavior passHref>
+								<Link href='/profile' passHref>
 									<Button variant='outline' className='w-full justify-start'>
 										<User className='mr-2 h-4 w-4' /> Profile Settings
 									</Button>

@@ -74,7 +74,7 @@ export default async function HomePage() {
 						Join our members in discussions about your favorite topics
 					</p>
 					<div className='flex gap-4 justify-center'>
-						<Link href='/register' legacyBehavior passHref>
+						<Link href='/register' passHref>
 							<Button size='lg'>Join the Discussion</Button>
 						</Link>
 					</div>
@@ -99,7 +99,7 @@ export default async function HomePage() {
 						</div>
 					)}
 					<div className='flex justify-center'>
-						<Link href='/categories' legacyBehavior passHref>
+						<Link href='/categories' passHref>
 							<Button size='lg' variant={'ghost'}>View all categories</Button>
 						</Link>
 					</div>

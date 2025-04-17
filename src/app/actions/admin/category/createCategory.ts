@@ -12,7 +12,7 @@ export const createCategory = async ({ name, description, isActive }: { name: st
 	}
 
 	try {
-		const sessionToken = cookies().get(SESSION_COOKIE_NAME)?.value ?? null;
+		const sessionToken = (await cookies()).get(SESSION_COOKIE_NAME)?.value ?? null;
 
 		if (!sessionToken) 
 			return { success: false, message: 'You are not logged in or your session is invalid' };

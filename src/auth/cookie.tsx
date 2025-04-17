@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 import { validateSession } from './session';
 
 export const SESSION_COOKIE_NAME = 'session';
@@ -16,7 +16,7 @@ export const setSessionCookie = (sessionToken: string, expiresAt: Date) => {
 		}
 	};
 
-	cookies().set(cookie.name, cookie.value, cookie.attributes);
+	(cookies() as unknown as UnsafeUnwrappedCookies).set(cookie.name, cookie.value, cookie.attributes);
 };
 
 export const deleteSessionCookie = () => {
@@ -32,12 +32,12 @@ export const deleteSessionCookie = () => {
 		}
 	};
 
-	cookies().set(cookie.name, cookie.value, cookie.attributes);
+	(cookies() as unknown as UnsafeUnwrappedCookies).set(cookie.name, cookie.value, cookie.attributes);
 };
 
 export const getAuth = async () => {
 	const sessionToken =
-      cookies().get(SESSION_COOKIE_NAME)?.value ?? null;
+      (await cookies()).get(SESSION_COOKIE_NAME)?.value ?? null;
   
 	if (!sessionToken) {
 		return { session: null, user: null };

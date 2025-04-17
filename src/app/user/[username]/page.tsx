@@ -1,14 +1,15 @@
 import { Navbar } from '@/components/navbar';
 import UserNotFoundComponent from './components/usernotfoundcomponent';
-import ProfileComponent from './components/ProfileComponent';
+import ProfileComponent from './components/profilecomponent';
 import { deleteUser } from '@/app/actions/admin/user/deleteUser';
 import { getUser } from '@/app/actions/users/getUser';
 
-export default async function SettingsProfilePage({ 
-	params 
-}: { 
-	params: { username: string }
-}) {
+export default async function SettingsProfilePage(
+	props: { 
+		params: Promise<{ username: string }>
+	}
+) {
+	const params = await props.params;
 	const user = await getUser(params.username);
 
 	if (!user) {
@@ -16,7 +17,7 @@ export default async function SettingsProfilePage({
 			<UserNotFoundComponent/>
 		);
 	}
-	
+
 	return (
 		<div>
 			<Navbar />

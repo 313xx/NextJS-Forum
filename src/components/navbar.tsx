@@ -62,7 +62,7 @@ export async function Navbar() {
 					<NavigationMenu className='flex-grow'>
 						<NavigationMenuList className='flex items-center gap-6'>
 							<NavigationMenuItem>
-								<Link href='/' legacyBehavior passHref>
+								<Link href='/' passHref>
 									<NavigationMenuLink className='text-xl font-bold text-gray-900 dark:text-white hover:opacity-80 transition-all duration-200'>
 										Forum Name
 									</NavigationMenuLink>
@@ -92,7 +92,7 @@ export async function Navbar() {
 
 								{user && (
 									<NavigationMenuItem>
-										<Link href='/users' legacyBehavior passHref>
+										<Link href='/users' passHref>
 											<NavigationMenuLink className='text-sm text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200 font-medium'>
 												Users
 											</NavigationMenuLink>
@@ -116,14 +116,14 @@ export async function Navbar() {
 											<CommandEmpty>No results found.</CommandEmpty>
 											<CommandGroup heading='Suggestions'>
 												<CommandItem>
-													<Link href='/users' legacyBehavior passHref>
+													<Link href='/users' passHref>
 														<a className='w-full'>
 															Search users
 														</a>
 													</Link>
 												</CommandItem>
 												<CommandItem>
-													<Link href='/categories' legacyBehavior passHref>
+													<Link href='/categories' passHref>
 														<a className='w-full'>
 															Categories
 														</a>
@@ -133,7 +133,7 @@ export async function Navbar() {
 											<CommandSeparator />
 											<CommandGroup heading='Settings'>
 												<CommandItem>			
-													<Link href='/profile' legacyBehavior passHref>
+													<Link href='/profile' passHref>
 														<a className='w-full'>
 															Profile
 														</a>
@@ -167,8 +167,8 @@ export async function Navbar() {
 											Profile
 										</Link>
 										{profileControl.map((profile) => (
-											<Link 
-												key={profile.title} 
+											<Link
+												key={profile.title}
 												href={profile.href}
 												className='block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
 											>

@@ -50,7 +50,7 @@ const ReputationComponent = ({
 			<div className='flex items-center justify-between border-b pb-4 last:border-0 last:pb-0'>
 				<div className='flex items-center gap-4'>
 					<Avatar>
-						<Link href={`/user/${username}`} legacyBehavior passHref>
+						<Link href={`/user/${username}`} passHref>
 							<AvatarImage 
 								src={`https://avatar.vercel.sh/${username}.svg?text=${Array.from(username)[0].toUpperCase()}`} 
 								alt='Avatar'
@@ -63,7 +63,7 @@ const ReputationComponent = ({
 					</Avatar>
 					<div>
 						<div className='flex items-center gap-2'>
-							<Link href={`/user/${username}`} legacyBehavior passHref>
+							<Link href={`/user/${username}`} passHref>
 								<p className='text-sm font-medium cursor-pointer'>{username}</p>
 							</Link>
 						</div>
